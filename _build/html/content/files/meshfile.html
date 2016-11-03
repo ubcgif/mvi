@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1.2.1. Mesh file &mdash; mvi 2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="mvi 2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="1. Elements of the program MVIINV" href="../elements.html"/>
+        <link rel="next" title="1.2.2. Topography file" href="topo.html"/>
+        <link rel="prev" title="1. Elements of the program MVIINV" href="../elements.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> mvi</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../elements.html">1. Elements</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../elements.html#general-files-for-mvi-programs">1.2. General files for MVI programs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../runPrograms.html">2. Running the programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#introduction">2.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#input-and-output-files">2.2. Input and output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">3. References</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">mvi</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../elements.html">1. Elements of the program MVIINV</a> &raquo;</li>
+      
+    <li>1.2.1. Mesh file</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/content/files/meshfile.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="mesh-file">
+<span id="meshfile"></span><h1>1.2.1. Mesh file<a class="headerlink" href="#mesh-file" title="Permalink to this headline">¶</a></h1>
+<p>The mesh defines the model region and has the following structure:</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/mesh3D.png" src="../../_images/mesh3D.png" />
+</div>
+<ul class="simple">
+<li><span class="math">\(NE\)</span>: Number of cells in the East direction.</li>
+<li><span class="math">\(NN\)</span>: Number of cells in the North direction</li>
+<li><span class="math">\(NZ\)</span>: Number of cells in the vertical direction</li>
+<li><span class="math">\(E_o, N_o, Z_o\)</span>: Coordinates, in meters, of the southwest top corner, specified in (Easting, Northing, Elevation). The elevation can be relative to a reference elevation other than the sea level, but it needs to be consistent with the elevation used to specify the locations, observations, and topography files.</li>
+<li><span class="math">\(\Delta E_n\)</span>: <span class="math">\(n^{th}\)</span> cell width in the easting direction (ordered W to E).</li>
+<li><span class="math">\(\Delta N_n\)</span>: <span class="math">\(n^{th}\)</span> cell width in the northing direction (ordered S to N).</li>
+<li><span class="math">\(\Delta Z_n\)</span>: <span class="math">\(n^{th}\)</span> cell thickness (ordered top to bottom).</li>
+</ul>
+<p>The mesh can be designed in accordance with the area of interest and the spacing of the data available in the area. In general, the mesh consists of a core region which is directly beneath the area of available data, and a padding zone surrounding this core mesh. Within the core mesh, the size of the cells should be comparable with the spacing of the data. There is no restriction on the relative position of data location and nodal points in horizontal direction. The cell width in this area is usually uniform. Beyond the core region, the mesh should be padded with cells that increase (typically no more than 40% of the previous length).</p>
+<p>The vertical position of the mesh is specified in elevation. This is to accommodate the inversion of a data set acquired over a topographic surface. When there is strong topographic relief, which the user wishes to incorporate it into the inversion, special care should be taken to design the mesh. A conceptually simple approach is first to design a rectangular mesh whose top (specified by <span class="math">\(Z_o\)</span>) is just below the highest elevation point, and then to strip off cells that are above the topographic surface. This is the approach taken in . The number of cells to be stripped off in each column is determined by the user-supplied topography file. Only the remaining cells will be used in the forward modelling or included in the inversion as model parameters.</p>
+<div class="section" id="example">
+<h2>1.2.1.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>This example shows a mesh that consists of 26 cells in easting, 27 cells in the northing, and 23 cells in the vertical directions. The top of the mesh is located at 0 m of elevation and the southwest corner is at -350 m easting and -400 m northing. The cells in the core portion of the mesh are all 50 m <span class="math">\(\times\)</span> 50 m <span class="math">\(\times\)</span> 25 m. There are three cells in the padding zone in every direction except the top of the core mesh.</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/mesh3Dex.png" src="../../_images/mesh3Dex.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="topo.html" class="btn btn-neutral float-right" title="1.2.2. Topography file">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../elements.html" class="btn btn-neutral" title="1. Elements of the program MVIINV"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, UBC-GIF.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1.2.5. Model file &mdash; mvi 2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="mvi 2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="1. Elements of the program MVIINV" href="../elements.html"/>
+        <link rel="next" title="2. Running the programs" href="../runPrograms.html"/>
+        <link rel="prev" title="1.2.6. Weights file" href="weight.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> mvi</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../elements.html">1. Elements</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../elements.html#general-files-for-mvi-programs">1.2. General files for MVI programs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../runPrograms.html">2. Running the programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#introduction">2.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#input-and-output-files">2.2. Input and output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">3. References</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">mvi</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../elements.html">1. Elements of the program MVIINV</a> &raquo;</li>
+      
+    <li>1.2.5. Model file</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/content/files/model.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="model-file">
+<span id="modelfile"></span><h1>1.2.5. Model file<a class="headerlink" href="#model-file" title="Permalink to this headline">¶</a></h1>
+<p>This file contains the cell property values associated with a model vector. The model objective function exponents (<span class="math">\(L_p / L_q\)</span>) can be designated throughout the mesh with this type of model file. The active cell file is also of this format (see below) The following is the file structure of the model file</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/modelfile.png" src="../../_images/modelfile.png" />
+</div>
+<p>Each \(m_{i,j,k}\) is the property in the \([i,j,k]^{th}\) model cell. \([i, j, k]=[1, 1, 1]\) is defined as the cell at the top, south-west corner of the model. The total number of lines in this file should equal \(NN \times NE \times NZ\), where \(NN\) is the number of cells in the north direction, \(NE\) is the number of cells in the east direction, and \(NZ\) is the number of cells in the vertical direction. The model ordering is performed first in the z-direction (top-to-bottom), then in the easting, and finally in the northing.</p>
+<p><strong>NOTE</strong>: Only the cells completely below the (interpolated) topographic surface are kept within an inversion. The cells above or at the topographic surface are removed from the model, although these must still be included in the as if they are a part of the model. For input model files these cells can be assigned any value. The recovered model produced by inversion program also includes the cells that are excluded from the model, but these cells will have unrealistic values set to 2.</p>
+<div class="section" id="active-cells-file">
+<span id="activefile"></span><h2>1.2.5.1. Active cells file<a class="headerlink" href="#active-cells-file" title="Permalink to this headline">¶</a></h2>
+<p>This file is optional. The active cells file contains information about the cells that will be incorporated into the inversion. It has exact same format as the , and thus must be the same size, with one exception. Values of this file are restricted to either -1, 0 or 1. By default, all cells below the earth&#8217;s surface are active (1) and incorporated into the inversion. Inactive cells are set to the values of the reference model and influence the forward modelling. There are two kinds of inactive cells:</p>
+<ul class="simple">
+<li>inactive cells that <em>do not</em> influence the model objective (set to 0) and</li>
+<li>inactive cells that <em>do</em> influence the model objective function (set to -1).</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../runPrograms.html" class="btn btn-neutral float-right" title="2. Running the programs">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="weight.html" class="btn btn-neutral" title="1.2.6. Weights file"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, UBC-GIF.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1.2.3. Magnetic observations file &mdash; mvi 2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="mvi 2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="1. Elements of the program MVIINV" href="../elements.html"/>
+        <link rel="next" title="1.2.4. Vector model file" href="vectorModel.html"/>
+        <link rel="prev" title="1.2.2. Topography file" href="topo.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> mvi</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../elements.html">1. Elements</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../elements.html#general-files-for-mvi-programs">1.2. General files for MVI programs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../runPrograms.html">2. Running the programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#introduction">2.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../runPrograms.html#input-and-output-files">2.2. Input and output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">3. References</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">mvi</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../elements.html">1. Elements of the program MVIINV</a> &raquo;</li>
+      
+    <li>1.2.3. Magnetic observations file</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/content/files/magfile.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="magnetic-observations-file">
+<span id="magfile"></span><h1>1.2.3. Magnetic observations file<a class="headerlink" href="#magnetic-observations-file" title="Permalink to this headline">¶</a></h1>
+<p>This file is used to specify the inducing field parameters, anomaly type, observation locations, and the observed magnetic anomalies with estimated standard deviation. The values of parameters specifying the inducing field anomaly type and observation locations are identical to those in file. The output of the forward modelling program has the same structure except that the column of standard deviations for the error is omitted. Lines starting with ! are comments. The structure of the magnetics observations file is:</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/magObs.png" src="../../_images/magObs.png" />
+</div>
+<p>Parameter definitions:</p>
+<ul class="simple">
+<li>incl, decl: Inclination and declination of the inducing magnetic field. The declination is specified positive east with respect to the northing used in the mesh and locations files. The inclination is positive down.</li>
+<li>geomag: Strength of the inducing field in nanoTesla (nT).</li>
+<li>ainc, adec, idir: Inclination and declination of the anomaly projection. Set idir=0 for a multi-component dataset and idir=1 for a single component dataset where all the observations have the same inclination and declination of the anomaly projection.</li>
+<li>ndat: Number of observations. When single component data are specified the number of observations is equal to the number of data locations. When multi-component data are specified the number of observations will exceed the number of data locations. For example, if three-component data are specified at <span class="math">\(N\)</span> locations, the number of observations is <span class="math">\(3N\)</span>.</li>
+<li>E, N, ELEV: Easting, northing, and elevation of the observation measured in meters. Elevation should be above the topography for surface data, and below the topography for borehole data. The observation locations can be listed in any order.</li>
+<li>(ainc<span class="math">\(_{n}\)</span>, adec<span class="math">\(_{n}\)</span>): Inclination and declination of the anomaly projection for nth observation. This is used only when idir=0. The brackets <span class="math">\([\cdots]\)</span> indicate that these two field are optional depending upon the value of idir.</li>
+<li>Mag<span class="math">\(_n\)</span>: Magnetic anomaly data, measured in nT.</li>
+<li>Err<span class="math">\(_n\)</span>: Standard deviation of Mag<span class="math">\(_n\)</span>. This represents the absolute error. It must be positive and non-zero.</li>
+</ul>
+<p><strong>NOTE:</strong> It should be noted that the data are <strong>extracted anomalies</strong> which are derived by removing the regional from the field measurements. It is crucial that the data be prepared as such. The total field anomaly is calculated when <code class="docutils literal"><span class="pre">ainc=incl</span></code> and <code class="docutils literal"><span class="pre">adec=decl</span></code>. An example is inputting the vertical field anomaly, Bz, calculated by setting <code class="docutils literal"><span class="pre">ainc=90</span></code> and <code class="docutils literal"><span class="pre">adec=0</span></code>. The easting and northing components are respectively given by the inclination and declination pairs <code class="docutils literal"><span class="pre">(0,</span> <span class="pre">90)</span></code> and <code class="docutils literal"><span class="pre">(0,</span> <span class="pre">90)</span></code>. The user can specify other <code class="docutils literal"><span class="pre">(ainc,</span> <span class="pre">adec)</span></code> pairs to calculate the other anomaly components such as the Bx or By. Easting, northing, and elevation information should be in the same coordinate system as defined in the mesh.</p>
+<div class="section" id="examples">
+<h2>1.2.3.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The following are two examples of data files. The first example file
+specifies a set of total field anomaly data, and the second example file
+provides a set of multi-component borehole data.</p>
+<p><strong>Example 1</strong>: single-component data</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/surfaceMagEx.png" src="../../_images/surfaceMagEx.png" />
+</div>
+<p><strong>Example 2</strong>: Multi-component data (e. g., borehole data)</p>
+<div class="figure align-center" style="width: 50%">
+<img alt="../../_images/boreholeMagEx.png" src="../../_images/boreholeMagEx.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vectorModel.html" class="btn btn-neutral float-right" title="1.2.4. Vector model file">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="topo.html" class="btn btn-neutral" title="1.2.2. Topography file"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, UBC-GIF.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
