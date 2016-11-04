@@ -18,7 +18,7 @@ All files are in ASCII text format - they can be read with any text editor. Inpu
 
 - ``obs.loc``: The observation :ref:`locations <magfile>`.
 
-- ``model.fld``: The magnetic vector component :ref:`model <modelfile>` in X,Y,Z components.
+- ``model.fld``: The magnetic vector components :ref:`model <modelVectorFile>` in X,Y,Z (Cartesian) coordinates.
 
 - ``topo.dat``: Surface :ref:`topography <topofile>` (optional). If omitted, the surface will be treated as being flat and the top of the 3D mesh.
 
