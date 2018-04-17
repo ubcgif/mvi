@@ -6,8 +6,6 @@ Introduction
 
 The program library consists of the programs:
 
-#. **PFWEIGHT**: calculates depth or distance weighting function.
-
 #. **MVIFWD**: performs forward modelling of magnetic vectors
 
 #. **MVISEN**: calculates sensitivities for the inversion
@@ -28,7 +26,7 @@ There are seven general files which are used in MVI. All are in ASCII text forma
     Topography <files/topo>
     Observation/Location <files/magfile>
     Vector model <files/vectorModel>
-    Model <files/model>    
+    Model <files/model>
     Weighting <files/weight>
     Active model <files/model>
 
