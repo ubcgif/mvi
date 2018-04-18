@@ -9,68 +9,16 @@ MVI package
 MIV is a program library for carrying out forward modelling and inversion of
 magnetic data solving for the full magnetization vector, either in Cartesian
 or Spherical coordinate systems.
-
-Latest updates
-^^^^^^^^^^^^^^
-	- Distance weights are calculated directly from the sensitivity matrix and no longer requires to run the PFWEIGHT program
-	- Length scales used in the differential operators are set internally based on the mesh cell dimension. The default values for :math:`\alpha_s` is now 1.
-	- Speedup of the MVI-Spherical formulation through an approximated sensitivity
-	- Compression of the sensitivity available for both the MVI-Cartesian and MVI-Spherical. Default threshold tolerance determined iteratively favoring lowest compression error.
-
-.. raw:: html
-    :file: ./BlockVersions.html
-
-.. note:: Download this `Three Blocks Example <https://github.com/ubcgif/mvi/raw/v3/examples/TripleBlocks.zip>`_
-
 The contents of this manual are as follows:
 
 .. toctree::
     :numbered:
     :maxdepth: 2
 
+    Overview <content/overview>
+    Background Theory <content/theory>
     Elements <content/elements>
     Running the programs <content/runPrograms>
+    Example <content/examples>
     References <references>
-
-
-
-
-.. figure:: images/True.png
-    :align: right
-    :figwidth: 0%
-
-.. figure:: images/MVICSmooth.png
-    :align: right
-    :figwidth: 0%
-
-.. figure:: images/MVISSmooth.png
-    :align: right
-    :figwidth: 0%
-
-.. figure:: images/MVISSparse.png
-    :align: right
-    :figwidth: 0%
-
-.. figure:: images/MVICSmooth_v1.png
-    :align: right
-    :figwidth: 0%
-
-.. figure:: images/MVICSmooth_v2.png
-    :align: right
-    :figwidth: 0%
-
-
-
-
-.. +--------+---------+
-.. | |im1|  |  |im2|  |
-.. +--------+---------+
-.. | |im3|  |  |im4|  |
-.. +--------+---------+
-
-
-..    File formats <content/elements>
-..    Running the programs <content/run>
-..    Examples <content/examples>
-
 

@@ -1,22 +1,21 @@
 Running the programs
 ====================
 
-The software package MVI uses five general codes:
+The software package MVI uses three main programs:
 
-- ``PFWEIGHT``: calculates the depth weighting function.
+  .. toctree::
+    :maxdepth: 1
 
-- ``MVIFWD``: performs forward modelling.
+    MVIFWD: Forward modelling <programs/mvifwd>
+    MVISEN: Sensitivity calculation <programs/mvisen>
+    MVIINV: Inversion algorithm <programs/mviinv>
 
-- ``MVISEN``: calculates sensitivity.
-
-- ``MVIINV``: performs 3D magnetic vector inversion.
-
-This section discusses the use of these codes individually.
-
-Introduction
-------------
-
-All programs in the package can be executed under Windows or Linux environments. They can be run by typing the program name followed by a control file in the ``command prompt`` (Windows) or ``terminal`` (Linux). They can be executed directly on the command line or in a shell script or batch file. When a program is executed without any arguments, it will print the usage to screen.
+All programs in the package can be executed under Windows or Linux
+environments. They can be run by typing the program name followed by a control
+file in the ``command prompt`` (Windows) or ``terminal`` (Linux). They can be
+executed directly on the command line or in a shell script or batch file. When
+a program is executed without any arguments, it will print the usage to
+screen.
 
 Execution on a single computer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,15 +37,4 @@ Execution on a local network or commodity cluster
 
 The ``MVI`` program library's main programs are currently not implemented to use Message Pass Interface (MPI).
 
-
-Input and output files
-----------------------
-
-  .. toctree::
-    :maxdepth: 1
-
-    Forward modelling (MVIFWD) <programs/mvifwd>
-    Depth/distance weighting (PFWEIGHT) <programs/pfweight>
-    Sensitivity calculation (MVISEN) <programs/mvisen>
-    Inversion (MVIINV) <programs/mviinv>
 
