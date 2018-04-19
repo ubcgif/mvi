@@ -12,6 +12,8 @@ manual is designed to help geophysicist who may be familiar with the magnetic
 experiment but not necessarily versed in the details of inverse
 theory.
 
+.. note:: For more general information about the magnetic experiment, the reader is invited to visit the `GPG site <https://gpg.geosci.xyz>`_
+
 Magnetic Data
 -------------
 
@@ -66,7 +68,7 @@ Rocks magnetization :math:`\mathbf{M}` comprises three main components:
 	:label: magnetization
 
 where the induced response depends on the magnetic susceptibility
-:math:`\kappa` of rocks, Earth's primary field :math:`\mathbf{H_0}`, secondary
+:math:`\mathbf{m}` of rocks, Earth's primary field :math:`\mathbf{H_0}`, secondary
 ambient fields :math:`\mathbf{H_s}` (self- demagnetization) and possible
 remanent components :math:`\mathbf{M_r}`. The magnetized material gives
 rise to a magnetic flux :math:`\mathbf{B}_A`.
@@ -134,15 +136,15 @@ direction must be specified for each datum.
 We can define the magnetization vector in terms of *effective susceptibility*
 along orthogonal directions such that
 
-.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \kappa_x \\ \kappa_y \\ \kappa_z \end{array} \right]
+.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \boldsymbol \kappa_x \\ \boldsymbol \kappa_y \\ \boldsymbol \kappa_z \end{array} \right]
 
 Let the set of extracted anomaly data be :math:`\mathbf{d} =
 (d_1,d_2,...,d_N)^T` and the effective susceptibilities of cells in the model be
-:math:`\boldsymbol{\kappa} = (\kappa_{x_1},\kappa_{x_2},...,\kappa_{z_M})^T`. The two are related by
+:math:`\boldsymbol{\mathbf{m}} = (\kappa_{x_1},\kappa_{x_2},...,\kappa_{z_M})^T`. The two are related by
 the forward matrix
 
 .. math::
-   \mathbf{d}=\mathbf{G}{\boldsymbol{\kappa}}.
+   \mathbf{d}=\mathbf{G}{\boldsymbol{\mathbf{m}}}.
    :label: sens
 
 The matrix has elements :math:`g_{ij}` which quantify the contribution to the
@@ -170,7 +172,7 @@ function, :math:`\phi_d`, such that
 .. math::
    \begin{aligned}
    \min \phi = \phi_d+\beta\phi_m \\
-   \mbox{s. t. } \kappa^l\leq \kappa \leq \kappa^u, \nonumber\end{aligned}
+   \mbox{s. t. } \mathbf{m}^l\leq \mathbf{m} \leq \mathbf{m}^u, \nonumber\end{aligned}
    :label: globphi
 
 where :math:`\beta` is a trade off parameter that controls the relative
@@ -181,11 +183,63 @@ will search for the value of :math:`\beta` via an L-curve criterion
 :cite:`Hansen00` that produces the expected misfit. Otherwise, a user-defined
 :math:`\beta` value is used. Bound are imposed through the projected gradient
 method so that the recovered model lies between imposed lower
-(:math:`\kappa^l`) and upper (:math:`\kappa^u`) bounds.
+(:math:`\mathbf{m}^l`) and upper (:math:`\mathbf{m}^u`) bounds.
 
-In discrete matrix form, :eq:`globphi` can be written as
+In discrete matrix form, the objective function in :eq:`globphi` can be
+written as
 
+.. math::
+  \phi = \phi_d + \beta \phi_m
+  = \| \mathbf{W}_d \mathbb{F}(\mathbf{m}) - \mathbf{d}^{obs}\|_2^2 +\beta \sum_{i = s,x,y,z}  {\|\mathbf{W_i}(\mathbf{m-m_{ref}})\|}^2_2 \;,
 
+where :math:`\mathbf{W}_i` are functions measuring the deviation of the model
+:math:`\mathbf{m}` to a reference :math:`\mathbf{m_{ref}}` or the roughness
+measured along three orthogonal directions. The following sections provide
+additional details about the :ref:`misfit<misfit>` and the
+:ref:`regularization<regularization>` function.
+
+.. _misfit:
+
+Misfit function :math:`\phi_d`
+------------------------------
+
+The first term in :eq:`globphi` defines a measure of how well
+the observed data are reproduced. Here we use the :math:`l_2`-norm measure
+
+.. math::
+    \begin{aligned}
+    \phi_d = \left\| \mathbf{W}_d(\mathbb{F}(\mathbf{m})-\mathbf{d})\right\|^2.\end{aligned}
+    :label: phid
+
+For the work here, we assume that the contaminating noise on the data is
+independent and Gaussian with zero mean. Specifying :math:`\mathbf{W}_d` to be
+a diagonal matrix whose :math:`i^{th}` element is :math:`1/\sigma_i`, where
+:math:`\sigma_i` is the standard deviation of the :math:`i^{th}` datum makes
+:math:`\phi_d` a chi-squared distribution with :math:`N` degrees of freedom.
+The optimal data misfit for data contaminated with independent, Gaussian noise
+has an expected value of :math:`E[\chi^2]=N`, providing a target misfit for
+the inversion. We now have the components to solve the inversion as defined in
+equation :eq:`globphi`.
+
+To solve the optimization problem when constraints are imposed we use the
+projected gradients method :cite:`CalamaiMore87,Vogel02`. This technique
+forces the gradient in the Krylov sub-space minimization (in other words a
+step during the conjugate gradient process) to zero if the proposed step would
+make a model parameter exceed the bound constraints. The result is a model
+that reaches the bounds, but does not exceed them.
+
+.. This method is
+.. computationally faster than the log-barrier method because (1) model
+.. parameters on the bounds are neglected for the next iteration and (2) the log-
+.. barrier method requires the calculation of a barrier term. Previous versions
+.. of MAG3D used the logarithmic barrier method :cite:`Wright97,NocedalWright99`.
+
+.. The weighting function is generated by the program that is in turn given as
+.. input to the sensitivity generation program MAGSEN3D. This gives the user full
+.. flexibility in using customized weighting functions. This program allows user
+.. to specify whether to use a generalized depth weighting or a distance-based
+.. weighting that is useful in regions of largely varying topography. Distance
+.. weighting must be used when borehole data are present.
 
 Sensitivities
 ~~~~~~~~~~~~~
@@ -197,7 +251,8 @@ that a model update is calculated by iteratively solving
   \frac{\partial \phi(\mathbf{m})}{\partial \mathbf{m}} = \mathbf{J^T W_\text{d}^T W_\text{d}} \left[ \mathbb{F}(\mathbf{m}) -\mathbf{d}^{obs} \right]+ \beta \mathbf{W^T} \mathbf{W}  ( \mathbf{m} - \mathbf{m_{ref}}) \\
   :label: GaussNewton
 
-where :math:`\mathbf{J}`, also known as the **sensitivity** matrix, holds the derivatives of the forward operation with respect to the **model**
+where :math:`\mathbf{J}`, also known as the **sensitivity** matrix, holds the
+derivatives of the forward operation with respect to the **model**
 
 .. math::
   \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}}
@@ -214,24 +269,72 @@ magnetic susceptibility :math:`\boldsymbol \kappa` along a rotated coordinate
 system such that one of the component is aligned with the inducing field
 :math:`\mathbf{H}_0` such that
 
-.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \kappa_p \\ \kappa_s \\ \kappa_t \end{array} \right]
+.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \boldsymbol \kappa_p \\ \boldsymbol \kappa_s \\ \boldsymbol \kappa_t \end{array} \right]
 
 where **p** (primary), **s** (secondary) and **t** (tertiary) define an
 orthogonal system that describe the magnetization vector in 3D.
-In this case, the sensitivity matrix simplifies to
+
+.. figure:: ../images/Magnetization_Cartesian.png
+    :align: center
+    :figwidth: 50%
+
+    Cartesian PST rotated coordinate system.
+
+The sensitivity matrix :math:`\mathbf{J}` simplifies to
 
 .. math::
   \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}} = \mathbf{G}
 
 
-The main advantage of this formulation is that the system is linear and simple
-to invert. The drawback is that both the direction and the magnitude of
-magnetization are coupled in the components of the field which makes it harder
-to impose sparsity and petrophysical constraints.
+The main advantage of this formulation is that the inversion remains linear.
+The drawback is that both the direction and the magnitude of magnetization are
+coupled in the vector components, which makes it harder to impose constraints
+on the magnetization vector, either through sparsity and petrophysical constraints.
 
 Spherical (ATP)
 """""""""""""""
 
+As an alternative, the Cartesian formulation, the magnetization vector can be
+expressed in terms of amplitude (:math:`\alpha`) and two orientation angles
+(:math:`\theta,\;\phi`), or [a, t, p].
+
+.. math::
+  x =& \alpha \; cos(\phi)\;cos(\theta) \\
+  y  =   & \alpha \; cos(\phi)\;sin(\theta) \\
+  z = & \alpha \; sin(\phi)
+  :label: trig
+
+.. figure:: ../images/Magnetization_Spherical.png
+    :align: center
+    :figwidth: 50%
+
+    Spherical (ATP) coordinate system.
+
+The sensitivity matrix becomes non-linear due to the trigonometric
+transformation such that
+
+.. math::
+  \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}} = \mathbf{G}\;\mathbf{S}
+
+where the matrix :math:`\mathbf{S}` holds the partial derivatives of :eq:`trig`
+
+.. math::
+  \mathbf{S} = \begin{bmatrix} \cos{\phi}\cos{\theta} & -\alpha\sin{\phi}\cos{\theta} & -\alpha\cos{\phi}\sin{\theta} \\
+  \cos{\phi}\sin{\theta} & -\alpha\sin{\phi}\sin{\theta} & \alpha\cos{\phi}\cos{\theta} \\
+  \sin{\phi} & \alpha\cos{\phi} & 0 \end{bmatrix}
+
+Up until recently, solving the spherical formulation had proven to be
+prohibitively difficult. Issues regarding the convergence of the non-linear
+problem have now been addressed through an automated sensitivity re-weighting
+strategy.
+
+Solving for model parameters in spherical coordinates comes with the increased
+flexibility however of constraining the amplitude and orientation
+independently. The reader is encouraged to visit the :ref:`examples<examples>`
+section.
+
+
+.. _regularization:
 
 Regularization
 ~~~~~~~~~~~~~~
@@ -240,89 +343,107 @@ We next discuss the construction of a model objective function which, when
 minimized, produces a model that is geophysically interpretable. This function
 gives the flexibility to incorporate as little or as much information as
 possible. At the minimum, it drives the solution towards a reference model
-:math:`\kappa_0` and requires that the model be relatively smooth in the three
+:math:`\mathbf{m}_0` and requires that the model be relatively smooth in the three
 spatial directions. Here we adopt a right handed Cartesian coordinate system
 with positive north and positive down. Let the model objective function be
 
 .. _mof:
 .. math::
    \begin{aligned}
-   \phi_m(\kappa) &=& \alpha_s\int\limits_V w_s\left\{w(\mathbf{r})[\kappa(\mathbf{r})-{\kappa}_0] \right\}^2dv + \alpha_x\int\limits_V w_x \left\{\frac{\partial w(\mathbf{r})[\kappa(\mathbf{r})-{\kappa}_0]}{\partial x}\right\}^2dv \\ \nonumber
-   &+& \alpha_y\int\limits_V w_y\left\{\frac{\partial w(\mathbf{r})[\kappa(\mathbf{r})-{\kappa}_0]}{\partial y}\right\}^2dv +\alpha_z\int\limits_V\ w_z\left\{\frac{\partial w(\mathbf{r})[\kappa(\mathbf{r})-{\kappa}_0]}{\partial z}\right\}^2dv,\end{aligned}
+   \phi_m(\mathbf{m}) &=& \alpha_s\int\limits_V w_s\left\{w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0] \right\}^2dv + \alpha_x\int\limits_V w_x \left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial x}\right\}^2dv \\ \nonumber
+   &+& \alpha_y\int\limits_V w_y\left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial y}\right\}^2dv +\alpha_z\int\limits_V\ w_z\left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial z}\right\}^2dv,\end{aligned}
    :label: mof
 
-where the functions :math:`w_s`, :math:`w_x`, :math:`w_y` and :math:`w_z` are spatially dependent, while :math:`\alpha_s`, :math:`\alpha_x`, :math:`\alpha_y` and :math:`\alpha_z` are coefficients, which affect the relative importance of different components in the objective function. The reference model is given as :math:`\kappa_0` and :math:`w(\mathbf{r})` is a generalized depth weighting function. The purpose of this function is to counteract the geometrical decay of the sensitivity with the distance from the observation location so that the recovered susceptibility is not concentrated near the observation locations. It should be noted that although traditionally the depth weighting is applied through the model objective function, practically applies it to the sensitivity matrix prior to compression, increasing the effectiveness of the wavelet transform. The details of the depth weighting function will be discussed in the next section.
+where the functions :math:`w_s`, :math:`w_x`, :math:`w_y` and :math:`w_z` are
+spatially dependent, while :math:`\alpha_s`, :math:`\alpha_x`,
+:math:`\alpha_y` and :math:`\alpha_z` are coefficients, which affect the
+relative importance of different components in the objective function. The
+reference model is given as :math:`\mathbf{m}_0` and :math:`w(\mathbf{r})` is
+a generalized sensitivity weighting function. The purpose of this function is to
+counteract the geometrical decay of the sensitivity with the distance from the
+observation location. The details of the
+sensitivity weighting function will be discussed in the :ref:`next section<sensweight>`.
 
-The objective function in equation :eq:`mof` has the flexibility to incorporate many types of prior knowledge into the inversion. The reference model may be a general background model that is estimated from previous investigations or it will be a zero model. The reference model would generally be included in the first component of the objective function but it can be removed, if desired, from the remaining terms; often we are more confident in specifying the value of the model at a particular point than in supplying an estimate of the gradient. The choice of whether or not to include :math:`\kappa_0` in the derivative terms can have significant effect on the recovered model as shown through the synthetic example (section [RefModSection]). The relative closeness of the final model to the reference model at any location is controlled by the function :math:`w_s`. For example, if the interpreter has high confidence in the reference model at a particular region, he can specify :math:`w_s` to have increased amplitude there compared to other regions of the model, thus favouring a model near the reference model in those locations. The weighting functions :math:`w_x`, :math:`w_y`, and :math:`w_z` can be designed to enhance or attenuate gradients in various regions in the model domain. If geology suggests a rapid transition zone in the model, then a decreased weighting on particular derivatives of the model will allow for higher gradients there and thus provide a more geologic model that fits the data.
+The objective function in equation :eq:`mof` has the flexibility to
+incorporate many types of prior knowledge into the inversion. The reference
+model may be a general background model that is estimated from previous
+investigations or it will be a zero model. The reference model would generally
+be included in the first component of the objective function but it can be
+removed, if desired, from the remaining terms; often we are more confident in
+specifying the value of the model at a particular point than in supplying an
+estimate of the gradient. The choice of whether or not to include
+:math:`\mathbf{m}_0` in the derivative terms can have significant effect on
+the recovered model as shown through the synthetic example (section
+[RefModSection]). The relative closeness of the final model to the reference
+model at any location is controlled by the function :math:`w_s`. For example,
+if the interpreter has high confidence in the reference model at a particular
+region, he can specify :math:`w_s` to have increased amplitude there compared
+to other regions of the model, thus favouring a model near the reference model
+in those locations. The weighting functions :math:`w_x`, :math:`w_y`, and
+:math:`w_z` can be designed to enhance or attenuate gradients in various
+regions in the model domain. If geology suggests a rapid transition zone in
+the model, then a decreased weighting on particular derivatives of the model
+will allow for higher gradients there and thus provide a more geologic model
+that fits the data.
 
-Numerically, the model objective function in equation eq:`mof` is discretized onto the mesh defining the susceptibility model using a finite difference approximation. This yields:
+Numerically, the model objective function in equation eq:`mof` is discretized
+onto the mesh defining the susceptibility model using a finite difference
+approximation. This yields:
 
 .. math::
     \begin{aligned}
-    \phi_m({\kappa}) = ({\kappa}-{\kappa}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s+\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z)({\kappa}-{\kappa}_0), \nonumber\\
-    \equiv({\kappa}-{\kappa}_0)^T\mathbf{W}_m^T\mathbf{W}_m({\kappa}-{\kappa}_0), \nonumber\\
-    =\left \| \mathbf{W}_m({\kappa}-{\kappa}_0) \right \|^2,\end{aligned}
+    \phi_m({\mathbf{m}}) = ({\mathbf{m}}-{\mathbf{m}}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s+\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z)({\mathbf{m}}-{\mathbf{m}}_0), \nonumber\\
+    \equiv({\mathbf{m}}-{\mathbf{m}}_0)^T\mathbf{W}_m^T\mathbf{W}_m({\mathbf{m}}-{\mathbf{m}}_0), \nonumber\\
+    =\left \| \mathbf{W}_m({\mathbf{m}}-{\mathbf{m}}_0) \right \|^2,\end{aligned}
     :label: modobjdiscr
 
 where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are :math:`M`-length vectors representing the recovered and reference models, respectively. Similarly, there is an option to remove to the reference model from the spatial derivatives in equation :eq:`modobjdiscr` such that
 
 .. math::
     \begin{aligned}
-    \phi_m({\kappa}) = ({\kappa}-{\kappa}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s)({\kappa}-{\kappa}_0) + {\kappa}^T(\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z){\kappa}, \nonumber \\
-    \equiv ({\kappa}-{\kappa}_0)^T\mathbf{W}_s^T\mathbf{W}_s({\kappa}-{\kappa}_0) + {\kappa}^T\mathbf{W}_m^T\mathbf{W}_m{\kappa}, \nonumber\\
-    =\left \| \mathbf{W}_s({\kappa}-{\kappa}_0) + \mathbf{W}_m{\kappa}\right \|^2.\end{aligned}
+    \phi_m({\mathbf{m}}) = ({\mathbf{m}}-{\mathbf{m}}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s)({\mathbf{m}}-{\mathbf{m}}_0) + {\mathbf{m}}^T(\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z){\mathbf{m}}, \nonumber \\
+    \equiv ({\mathbf{m}}-{\mathbf{m}}_0)^T\mathbf{W}_s^T\mathbf{W}_s({\mathbf{m}}-{\mathbf{m}}_0) + {\mathbf{m}}^T\mathbf{W}_m^T\mathbf{W}_m{\mathbf{m}}, \nonumber\\
+    =\left \| \mathbf{W}_s({\mathbf{m}}-{\mathbf{m}}_0) + \mathbf{W}_m{\mathbf{m}}\right \|^2.\end{aligned}
     :label: modobjdiscrOut
 
 
 In the previous two equations, the individual matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`, :math:`\mathbf{W}_y`, and :math:`\mathbf{W}_z` are straight forward to calculated once the model mesh and the weighting functions :math:`w(\mathbf{r})` and :math:`w_s` , :math:`w_x`, :math:`w_y`, :math:`w_z` are defined. The cumulative matrix :math:`\mathbf{W}_m^T\mathbf{W}_m` is then formed for the chosen configuration.
 
-The next step in setting up the inversion is to define a measure of how well the observed data are reproduced. Here we use the :math:`l_2`-norm measure
+.. _sensWeight:
+
+Sensitivity Weighting
+----------------------
+
+It is a well-known fact that static magnetic data have no inherent depth
+resolution. A numerical consequence of this is that when an inversion is
+performed, which minimizes :math:`\int m(\mathbf{r})^2 dv`, subject to fitting
+the data, the constructed susceptibility is concentrated close to the
+observation locations. This is a direct manifestation of the kernel's decay
+with the distance between the cell and observation locations. Because of the
+rapidly diminishing amplitude, the kernels of magnetic data are not sufficient
+to generate a function that possess significant structure at locations that
+are far away from observations.
+
+Moreover, the trigonometric transformation associated
+with the Spherical formulation introduces rapid changes in the sensitivity
+function, which affects the convergence of the algorithm.
+
+
+In order to overcome these issues, we opt for an iterative re-weighting of the
+regularization to adjust the relative influence of the misfit and
+regularization functions. While previous version of the ``MAG3D`` and ``MVI``
+made use of a depth or distance weighting, in this version we calculate the
+weights directly from the sensitivity matrix. We calculate the sensitivity
+weights as follow
 
 .. math::
-    \begin{aligned}
-    \phi_d = \left\| \mathbf{W}_d(\mathbf{G}\kappa-\mathbf{d})\right\|^2.\end{aligned}
-    :label: phid
-
-For the work here, we assume that the contaminating noise on the data is independent and Gaussian with zero mean. Specifying :math:`\mathbf{W}_d` to be a diagonal matrix whose :math:`i^{th}` element is :math:`1/\sigma_i`, where :math:`\sigma_i` is the standard deviation of the :math:`i^{th}` datum makes :math:`\phi_d` a chi-squared distribution with :math:`N` degrees of freedom. The optimal data misfit for data contaminated with independent, Gaussian noise has an expected value of :math:`E[\chi^2]=N`, providing a target misfit for the inversion. We now have the components to solve the inversion as defined in equation :eq:`globphi`.
-
-To solve the optimization problem when constraints are imposed we use the projected gradients method :cite:`CalamaiMore87,Vogel02`. This technique forces the gradient in the Krylov sub-space minimization (in other words a step during the conjugate gradient process) to zero if the proposed step would make a model parameter exceed the bound constraints. The result is a model that reaches the bounds, but does not exceed them. This method is computationally faster than the log-barrier method because (1) model parameters on the bounds are neglected for the next iteration and (2) the log-barrier method requires the calculation of a barrier term. Previous versions of MAG3D used the logarithmic barrier method :cite:`Wright97,NocedalWright99`.
-
-The weighting function is generated by the program that is in turn given as input to the sensitivity generation program MAGSEN3D. This gives the user full flexibility in using customized weighting functions. This program allows user to specify whether to use a generalized depth weighting or a distance-based weighting that is useful in regions of largely varying topography. Distance weighting must be used when borehole data are present.
-
-Depth Weighting and Distance Weighting
---------------------------------------
-
-It is a well-known fact that static magnetic data have no inherent depth resolution. A numerical consequence of this is that when an inversion is performed, which minimizes :math:`\int m(\mathbf{r})^2 dv`, subject to fitting the data, the constructed susceptibility is concentrated close to the observation locations. This is a direct manifestation of the kernel's decay with the distance between the cell and observation locations. Because of the rapidly diminishing amplitude, the kernels of magnetic data are not sufficient to generate a function that possess significant structure at locations that are far away from observations. In order to overcome this, the inversion requires a weighting to counteract this natural decay. Intuitively, such a weighting will be the inverse of the approximate geometrical decay. This gives cells at all locations equal probability to enter into the solution with a non-zero susceptibility.
+  \mathbf{W_r} &= diag \left( {\left[{\mathbf{\hat w_r}}\right]}^{1/2}\right)\\
+  \mathbf{\hat w_{r}} &= \frac{\mathbf{ w_{r}}}{max(\mathbf{ w_{r}})}\\
+  w_{r_j} &= {\left[\sum_{i=1}^{nD}{J^{(k)}_{ij}}^2 + \delta \right]}^{1/2}\;,
+  :label: SensWeights
 
 
-.. _depthWeight:
 
-Depth weighting for surface or airborne data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The sensitivity decays predominantly as a function of depth for surface data. Numerical experiments indicate that a function of the form :math:`(z+z_0)^{-3}` closely approximates the kernel's decay directly under the observation point provided that a reasonable value is chosen for :math:`z_0`. The value of 3 in the exponent is consistent with the fact that, to first order, a cuboidal cell acts like a dipole source whose field decays as inverse distance cubed. The value of :math:`z_0` can be obtained by matching the function 1/\ :math:`(z+z_0)^3` with the field produced at an observation point by a column of cells. Thus we use a depth weighting function of the form
-
-.. math:: w(\mathbf{r}_j)=\left[\frac{1}{\Delta z_{j}}\int\limits_{\Delta z_{ij}}\frac{dz}{(z+z_0)^\alpha}\right]^{1/2}, ~~ j=1,...,M.
-     :label: depthw
-
-For the inversion of surface data, where :math:`\alpha=3`, :math:`\mathbf{r}_j` is used to identify the :math:`j^{th}` cell, and :math:`\Delta z_j` is its thickness. This weighting function is normalized so that the maximum value is unity. Numerical tests indicate that when this weighting is used, the susceptibility model constructed by minimizing the model objective function in equation :eq:`mof`, subject to fitting the data, places the recovered anomaly at approximately the correct depth.
-
-If the data set involves highly variable observation heights the normal depth weighting function might not be most suitable. Distance weighting used for borehole data may be more appropriate as explained in the next section.
-
-.. _distWeight:
-
-Distance weighting for borehole data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-For data sets that contain borehole measurements, the sensitivities do not have a predominant decay direction, therefore a weighting function that varies in three dimensions is needed. We generalize the depth weighting used in surface data inversion to form such a 3D weighting function called distance weighting:
-
-.. math::
-      w(\mathbf{r}_j)=\frac{1}{\sqrt{\Delta V_{j}}} \left\{\sum_{i=1}^{N}\left[\int\limits_{\Delta V_{j}}\frac{dv}{(R_{ij}+R_0)^\alpha}\right]^{2}\right\}^{1/4}, ~~j=1,...,M,
-      :label: distw
-
-where :math:`\alpha=3`, :math:`V_j` is the volume of :math:`j^{th}` cell, :math:`R_{ij}` is the distance between a point within the source volume and the :math:`i^{th}` observation, and :math:`R_0` is a small constant used to ensure that the integral is well-defined (chosen to be a quarter of the smallest cell dimension). This weighting function is also normalized to have a maximum value of unity. For inversion of borehole data, it is necessary to use this more general weighting. This weighting function is also advantageous if surface data with highly variable observation heights are inverted.
-
-.. _waveletSection:
 
 Wavelet Compression of Sensitivity Matrix
 -----------------------------------------
