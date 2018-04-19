@@ -21,23 +21,21 @@ Format of the control file:
 
 .. figure:: ../../images/mvisen.png
      :align: center
-     :figwidth: 75% 
+     :figwidth: 75%
 
 The input parameters for the control file are:
 
-- ``mesh.msh``: Name of 3D :ref:`mesh file <meshFile>`.
+- ``mesh.msh``: Name of 3D `mesh file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/mesh3Dfile.html>`_.
 
-- ``obs.mag``: The :ref:`data file <magFile>` that contains the observation locations. Note for sensitivity calculations, standard deviations are not required, but this file may be the observations that will be used in the inversion (with uncertainties).
+- ``obs.mag``: The `data file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ that contains the observation locations. Note for sensitivity calculations, standard deviations are not required, but this file may be the observations that will be used in the inversion (with uncertainties).
 
-- ``topo.dat``: Surface :ref:`topography <topoFile>`. If ``null`` is entered, the surface will be treated as being flat on top of the mesh.
-
-- ``x_weight.txt``: A file (in the :ref:`model file format <modelFile>`) giving the sensitivity the weighting function. This can be user-specific or generated from :ref:`pfweight <pfweight>`. It does *not* have to specifically be named "distance_weight.txt" or "depth_weight.txt" (if :ref:`pfweight <pfweight>` was used, x = "depth" or "distance").
+- ``topo.dat``: Surface `topography <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/topoGIF3Dfile.html>`_. If ``null`` is entered, the surface will be treated as being flat on top of the mesh.
 
 - ``wvltx``: A five-character string identifying the type of wavelet used to compress the sensitivity matrix. The types of wavelets available are Daubechies wavelet with 1 to 6 vanishing moments (``daub1``, ``daub2`` and so on) and Symmlets with 4 to 6 vanishing moments (``symm4``, ``symm5``, ``symm6``). Note that ``daub1`` is the Haar wavelet and ``daub2`` is the Daubechies-4 wavelet. The Daubechies-4 wavelet is suitable for most inversions, while the others are provided for user's experimentation. If ``NONE`` is entered, the program does not use wavelet compression.
 
-- ``itol``, ``eps``: An integer and real number that specify how the wavelet threshold level is to be determined. This line is ignored if no wavelet compression is being used, however the line *must still* be in the input file. 
+- ``itol``, ``eps``: An integer and real number that specify how the wavelet threshold level is to be determined. This line is ignored if no wavelet compression is being used, however the line *must still* be in the input file.
 
-     ``itol=1``: program calculates the relative threshold and ``eps`` is the relative reconstruction error of the sensitivity. A reconstruction error of 0.05 (95%) is usually adequate. 
+     ``itol=1``: program calculates the relative threshold and ``eps`` is the relative reconstruction error of the sensitivity. A reconstruction error of 0.05 (95%) is usually adequate.
 
      ``itol=2``: the user defines the threshold level and ``eps`` is the threshold to be used. If ``null`` is entered on this line, a default relative reconstruction error of 0.05 (e.g. 5%) is used and the relative threshold level is calculated (i.e., ``itol=1`` , ``eps=0.05``).
 
@@ -49,7 +47,7 @@ Example of input file
 
 .. figure:: ../../images/mvisenEx.png
      :align: center
-     :figwidth: 50% 
+     :figwidth: 50%
 
 
 Output files
@@ -61,10 +59,10 @@ The program ``mvisen`` outputs five files. They are:
 
 #. ``mvisen.log``: The log file produced by the program for the user's records on how the sensitivity matrix was formed including the full control file used.
 
-#. ``sensitivity_x.txt``: This file is a :ref:`model file <modelFile>` that contains the average sensitivity for the *Easting* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
-   
-#. ``sensitivity_y.txt``: This file is a :ref:`model file <modelFile>` that contains the average sensitivity for the *Northing* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
-   
-#. ``sensitivity_z.txt``: This file is a :ref:`model file <modelFile>` that contains the average sensitivity for the *vertical* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
+#. ``sensitivity_x.txt``: This file is a `model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ that contains the average sensitivity for the *Easting* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
+
+#. ``sensitivity_y.txt``: This file is a `model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ that contains the average sensitivity for the *Northing* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
+
+#. ``sensitivity_z.txt``: This file is a `model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ that contains the average sensitivity for the *vertical* component magnetization vector for each cell. This file can be used for depth of investigation analysis or for use in designing special model objective function weighting.
 
 

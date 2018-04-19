@@ -39,19 +39,4 @@ can have any user-defined name and extension.
 
 .. caution:: Program output files have restricted file names that will be over-written if already in the directory.
 
-.. .. toctree::
-..     :maxdepth: 1
 
-..     Mesh <files/meshfile>
-..     Topography <files/topo>
-..     Observation/Location <files/magfile>
-..     Vector model <files/vectorModel>
-..     Model <files/model>
-..     Active model <files/model>
-
-
-.. - :ref:`MVIFWD<mvifwd>`: performs forward modelling.
-
-.. - :ref:`MVISEN<mvisen>`: calculates sensitivity.
-
-.. - :ref:`MVIINV<mviinv>`: performs 3D magnetic vector inversion.

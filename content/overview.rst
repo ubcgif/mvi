@@ -16,9 +16,8 @@ functions:
 
 #. :ref:`MVIINV<mviinv>`: Performs magnetic vector inversion of magnetic data in 3D.
 
-.. notes::
-	-  This code recovers the total magnetization vector including the combined contribution of induced fields (susceptibility), self-demagnetization and remenance.
-   	-  Inversion can be carried out in Cartesian (p,s,t) and Spherical (a,t,p) coordinate systems
+.. note:: -  This code recovers the total magnetization vector including the combined contribution of induced fields (susceptibility), self-demagnetization and remenance.
+   	      -  Inversion can be carried out in Cartesian (p,s,t) and Spherical (a,t,p) coordinate systems, but sparsity constraints can only be applied on the Spherical (atp) formulation.
 
 Licensing
 ---------
