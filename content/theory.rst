@@ -134,13 +134,15 @@ of the observation points and the inclination and declination of the anomaly
 direction must be specified for each datum.
 
 We can define the magnetization vector in terms of *effective susceptibility*
-along orthogonal directions such that
+:math:`\boldsymbol \kappa_e` along the Cartesian directions such that
 
-.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \boldsymbol \kappa_x \\ \boldsymbol \kappa_y \\ \boldsymbol \kappa_z \end{array} \right]
+.. math::
+  \mathbf{M} = {H}_0 \boldsymbol \kappa_e \\
+  \boldsymbol \kappa_e = \left[ \begin{array}{c} \boldsymbol \kappa_x \\ \boldsymbol \kappa_y \\ \boldsymbol \kappa_z \end{array} \right]
 
 Let the set of extracted anomaly data be :math:`\mathbf{d} =
 (d_1,d_2,...,d_N)^T` and the effective susceptibilities of cells in the model be
-:math:`\boldsymbol{\mathbf{m}} = (\kappa_{x_1},\kappa_{x_2},...,\kappa_{z_M})^T`. The two are related by
+:math:`\boldsymbol \kappa_e = (\kappa_{x_1},\kappa_{x_2},...,\kappa_{z_M})^T`. The two are related by
 the forward matrix
 
 .. math::
@@ -251,8 +253,8 @@ that a model update is calculated by iteratively solving
   \frac{\partial \phi(\mathbf{m})}{\partial \mathbf{m}} = \mathbf{J^T W_\text{d}^T W_\text{d}} \left[ \mathbb{F}(\mathbf{m}) -\mathbf{d}^{obs} \right]+ \beta \mathbf{W^T} \mathbf{W}  ( \mathbf{m} - \mathbf{m_{ref}}) \\
   :label: GaussNewton
 
-where :math:`\mathbf{J}`, also known as the **sensitivity** matrix, holds the
-derivatives of the forward operation with respect to the **model**
+where :math:`\mathbf{J}`, also known as the *sensitivity* matrix, holds the
+derivatives of the forward operation with respect to the *model*
 
 .. math::
   \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}}
@@ -265,14 +267,18 @@ Cartesian (PST)
 """""""""""""""
 
 The first choice is to define a model :math:`\mathbf{m}` in terms of effective
-magnetic susceptibility :math:`\boldsymbol \kappa` along a rotated coordinate
+magnetic susceptibility :math:`\boldsymbol \kappa_e` along a rotated coordinate
 system such that one of the component is aligned with the inducing field
 :math:`\mathbf{H}_0` such that
 
-.. math:: \mathbf{M} = {H}_0 \left[ \begin{array}{c} \boldsymbol \kappa_p \\ \boldsymbol \kappa_s \\ \boldsymbol \kappa_t \end{array} \right]
+.. math::
+  \mathbf{M} = |{H}_0| \left[ \begin{array}{c} \boldsymbol \kappa_p \\ \boldsymbol \kappa_s \\ \boldsymbol \kappa_t \end{array} \right]\\
+  \boldsymbol \kappa_{pst} = \Omega_\phi \Omega_\theta \boldsymbol \kappa_{xyz}
 
-where **p** (primary), **s** (secondary) and **t** (tertiary) define an
-orthogonal system that describe the magnetization vector in 3D.
+where *p* (primary), *s* (secondary) and *t* (tertiary) define an
+orthogonal system that describe the magnetization vector in 3D. The matrices
+:math:`\Omega_\theta` and :math:`\Omega_\phi` define the rotation around the *z*-axis and *y*-axis respectively so that the
+*x*-axis points along the inducing field direction.
 
 .. figure:: ../images/Magnetization_Cartesian.png
     :align: center
@@ -283,7 +289,8 @@ orthogonal system that describe the magnetization vector in 3D.
 The sensitivity matrix :math:`\mathbf{J}` simplifies to
 
 .. math::
-  \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}} = \mathbf{G}
+  \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}} =  \mathbf{\tilde G} \\
+  \mathbf{\tilde G} = \mathbf{G} \Omega_\phi \Omega_\theta
 
 
 The main advantage of this formulation is that the inversion remains linear.
@@ -296,7 +303,7 @@ Spherical (ATP)
 
 As an alternative, the Cartesian formulation, the magnetization vector can be
 expressed in terms of amplitude (:math:`\alpha`) and two orientation angles
-(:math:`\theta,\;\phi`), or [a, t, p].
+(:math:`\theta,\;\phi`) (ATP).
 
 .. math::
   x =& \alpha \; cos(\phi)\;cos(\theta) \\
@@ -344,70 +351,66 @@ minimized, produces a model that is geophysically interpretable. This function
 gives the flexibility to incorporate as little or as much information as
 possible. At the minimum, it drives the solution towards a reference model
 :math:`\mathbf{m}_0` and requires that the model be relatively smooth in the three
-spatial directions. Here we adopt a right handed Cartesian coordinate system
-with positive north and positive down. Let the model objective function be
+spatial directions. Let the model objective function be
 
 .. _mof:
 .. math::
-   \begin{aligned}
-   \phi_m(\mathbf{m}) &=& \alpha_s\int\limits_V w_s\left\{w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0] \right\}^2dv + \alpha_x\int\limits_V w_x \left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial x}\right\}^2dv \\ \nonumber
-   &+& \alpha_y\int\limits_V w_y\left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial y}\right\}^2dv +\alpha_z\int\limits_V\ w_z\left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m}}_0]}{\partial z}\right\}^2dv,\end{aligned}
+   \phi_m(\mathbf{m}) = \alpha_s\int\limits_V w_s\left\{w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}] \right\}^2dv \;+\\
+    \sum_{i=x,y,z} \alpha_i\int\limits_V w_i \left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}]}{\partial i}\right\}^2dv \\ \nonumber
    :label: mof
 
 where the functions :math:`w_s`, :math:`w_x`, :math:`w_y` and :math:`w_z` are
 spatially dependent, while :math:`\alpha_s`, :math:`\alpha_x`,
 :math:`\alpha_y` and :math:`\alpha_z` are coefficients, which affect the
-relative importance of different components in the objective function. The
-reference model is given as :math:`\mathbf{m}_0` and :math:`w(\mathbf{r})` is
+relative importance between the *smallness* and three *smoothness* functions. The
+reference model is given as :math:`\mathbf{m_{ref}}` and :math:`w(\mathbf{r})` is
 a generalized sensitivity weighting function. The purpose of this function is to
 counteract the geometrical decay of the sensitivity with the distance from the
 observation location. The details of the
-sensitivity weighting function will be discussed in the :ref:`next section<sensweight>`.
+sensitivity weighting function will be discussed in the :ref:`next section<sensWeight>`.
 
-The objective function in equation :eq:`mof` has the flexibility to
-incorporate many types of prior knowledge into the inversion. The reference
-model may be a general background model that is estimated from previous
-investigations or it will be a zero model. The reference model would generally
-be included in the first component of the objective function but it can be
-removed, if desired, from the remaining terms; often we are more confident in
-specifying the value of the model at a particular point than in supplying an
-estimate of the gradient. The choice of whether or not to include
-:math:`\mathbf{m}_0` in the derivative terms can have significant effect on
-the recovered model as shown through the synthetic example (section
-[RefModSection]). The relative closeness of the final model to the reference
-model at any location is controlled by the function :math:`w_s`. For example,
-if the interpreter has high confidence in the reference model at a particular
-region, he can specify :math:`w_s` to have increased amplitude there compared
-to other regions of the model, thus favouring a model near the reference model
-in those locations. The weighting functions :math:`w_x`, :math:`w_y`, and
-:math:`w_z` can be designed to enhance or attenuate gradients in various
-regions in the model domain. If geology suggests a rapid transition zone in
-the model, then a decreased weighting on particular derivatives of the model
-will allow for higher gradients there and thus provide a more geologic model
-that fits the data.
+.. The objective function in equation :eq:`mof` has the flexibility to
+.. incorporate many types of prior knowledge into the inversion. The reference
+.. model may be a general background model that is estimated from previous
+.. investigations or it will be a zero model. The reference model would generally
+.. be included in the first component of the objective function but it can be
+.. removed, if desired, from the remaining terms; often we are more confident in
+.. specifying the value of the model at a particular point than in supplying an
+.. estimate of the gradient. The choice of whether or not to include
+.. :math:`\mathbf{m}_0` in the derivative terms can have significant effect on
+.. the recovered model as shown through the synthetic example (section
+.. [RefModSection]). The relative closeness of the final model to the reference
+.. model at any location is controlled by the function :math:`w_s`. For example,
+.. if the interpreter has high confidence in the reference model at a particular
+.. region, he can specify :math:`w_s` to have increased amplitude there compared
+.. to other regions of the model, thus favouring a model near the reference model
+.. in those locations. The weighting functions :math:`w_x`, :math:`w_y`, and
+.. :math:`w_z` can be designed to enhance or attenuate gradients in various
+.. regions in the model domain. If geology suggests a rapid transition zone in
+.. the model, then a decreased weighting on particular derivatives of the model
+.. will allow for higher gradients there and thus provide a more geologic model
+.. that fits the data.
 
 Numerically, the model objective function in equation eq:`mof` is discretized
 onto the mesh defining the susceptibility model using a finite difference
 approximation. This yields:
 
 .. math::
-    \begin{aligned}
-    \phi_m({\mathbf{m}}) = ({\mathbf{m}}-{\mathbf{m}}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s+\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z)({\mathbf{m}}-{\mathbf{m}}_0), \nonumber\\
-    \equiv({\mathbf{m}}-{\mathbf{m}}_0)^T\mathbf{W}_m^T\mathbf{W}_m({\mathbf{m}}-{\mathbf{m}}_0), \nonumber\\
-    =\left \| \mathbf{W}_m({\mathbf{m}}-{\mathbf{m}}_0) \right \|^2,\end{aligned}
+    \phi_m({\mathbf{m}}) = \alpha_s \| \mathbf{W}_s \mathbf{R_s} ({\mathbf{m}}-{\mathbf{m_{ref}}})\|_2^2 + \sum_{i=x,y,z} \alpha_i \| \mathbf{W}_i \mathbf{R_i} \mathbf{G}_i (\mathbf{m}-\mathbf{m_{ref}}),
     :label: modobjdiscr
 
-where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are :math:`M`-length vectors representing the recovered and reference models, respectively. Similarly, there is an option to remove to the reference model from the spatial derivatives in equation :eq:`modobjdiscr` such that
+where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are :math:`M`-length vectors
+representing the recovered and reference models, respectively. The individual
+matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`, :math:`\mathbf{W}_y`, and
+:math:`\mathbf{W}_z` contains *user-defined* weights as well as the
+sensitivity weighting functions :math:`w(\mathbf{r})`. The gradient matrices
+:math:`\mathbf{G}_x`, :math:`\mathbf{G}_y` and :math:`\mathbf{G}_z` are finite
+difference operators measuring the change in model values.
 
-.. math::
-    \begin{aligned}
-    \phi_m({\mathbf{m}}) = ({\mathbf{m}}-{\mathbf{m}}_0)^T(\alpha_s \mathbf{W}_s^T\mathbf{W}_s)({\mathbf{m}}-{\mathbf{m}}_0) + {\mathbf{m}}^T(\alpha_x \mathbf{W}_x^T\mathbf{W}_x+\alpha_y \mathbf{W}_y^T\mathbf{W}_y+\alpha_z \mathbf{W}_z^T\mathbf{W}_z){\mathbf{m}}, \nonumber \\
-    \equiv ({\mathbf{m}}-{\mathbf{m}}_0)^T\mathbf{W}_s^T\mathbf{W}_s({\mathbf{m}}-{\mathbf{m}}_0) + {\mathbf{m}}^T\mathbf{W}_m^T\mathbf{W}_m{\mathbf{m}}, \nonumber\\
-    =\left \| \mathbf{W}_s({\mathbf{m}}-{\mathbf{m}}_0) + \mathbf{W}_m{\mathbf{m}}\right \|^2.\end{aligned}
-    :label: modobjdiscrOut
+.. important::
+  **Change from previous versions** - The difference operators :math:`\mathbf{G_i}` are now unitless, removing the need to alter scaling between the *smallness*
+  and *smoothness* terms. By default, :math:`\alpha_s`, :math:`\alpha_x`, :math:`\alpha_y` and :math:`\alpha_z` = 1
 
-
-In the previous two equations, the individual matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`, :math:`\mathbf{W}_y`, and :math:`\mathbf{W}_z` are straight forward to calculated once the model mesh and the weighting functions :math:`w(\mathbf{r})` and :math:`w_s` , :math:`w_x`, :math:`w_y`, :math:`w_z` are defined. The cumulative matrix :math:`\mathbf{W}_m^T\mathbf{W}_m` is then formed for the chosen configuration.
 
 .. _sensWeight:
 
@@ -433,7 +436,7 @@ In order to overcome these issues, we opt for an iterative re-weighting of the
 regularization to adjust the relative influence of the misfit and
 regularization functions. While previous version of the ``MAG3D`` and ``MVI``
 made use of a depth or distance weighting, in this version we calculate the
-weights directly from the sensitivity matrix. We calculate the sensitivity
+weights directly from the sensitivity matrix. We define the sensitivity
 weights as follow
 
 .. math::
@@ -442,16 +445,36 @@ weights as follow
   w_{r_j} &= {\left[\sum_{i=1}^{nD}{J^{(k)}_{ij}}^2 + \delta \right]}^{1/2}\;,
   :label: SensWeights
 
-
+where the superscript :math:`(k)` is an iteration index and :math:`\delta` is
+a small number added to avoid singularity.
 
 
 Wavelet Compression of Sensitivity Matrix
 -----------------------------------------
 
-The two major obstacles to the solution of a large-scale magnetic inversion problem are the large amount of memory required for storing
-the sensitivity matrix and the CPU time required for the application of the sensitivity matrix to model vectors. This program library overcomes these difficulties by forming a sparse representation of the sensitivity matrix using a wavelet transform based on compactly supported, orthonormal wavelets. For more details, the users are referred to :cite:`LiOldenburg03,LiOldenburg10`. Here, we give a brief description of the method necessary for the use of the MAG3D library.
+The two major obstacles to the solution of a large-scale magnetic inversion
+problem are the large amount of memory required for storing the sensitivity
+matrix and the CPU time required for the application of the sensitivity matrix
+to model vectors. This program library overcomes these difficulties by forming
+a sparse representation of the sensitivity matrix using a wavelet transform
+based on compactly supported, orthonormal wavelets. For more details, the
+users are referred to :cite:`LiOldenburg03,LiOldenburg10`. Here, we give a
+brief description of the method necessary for the use of the MVI library.
 
-Each row of the sensitivity matrix in a 3D magnetic inversion can be treated as a 3D image and a 3D wavelet transform can be applied to it. By the properties of the wavelet transform, most transform coefficients are nearly or identically zero. When coefficients of small magnitudes are discarded (the process of thresholding), the remaining coefficients still contain much of the necessary information to reconstruct the sensitivity accurately. These retained coefficients form a sparse representation of the sensitivity in the wavelet domain. The need to store only these large coefficients means that the memory requirement is reduced. Further, the multiplication of the sensitivity with a vector can be carried out by a sparse multiplication in the wavelet domain. This greatly reduces the CPU time. Since the matrix-vector multiplication constitutes the core computation of the inversion, the CPU time for the inverse solution is reduced accordingly. The use of this approach increases the size of solvable problems by nearly two orders of magnitude.
+Each row of the sensitivity matrix in a 3D magnetic inversion can be treated
+as a 3D image and a 3D wavelet transform can be applied to it. By the
+properties of the wavelet transform, most transform coefficients are nearly or
+identically zero. When coefficients of small magnitudes are discarded (the
+process of thresholding), the remaining coefficients still contain much of the
+necessary information to reconstruct the sensitivity accurately. These
+retained coefficients form a sparse representation of the sensitivity in the
+wavelet domain. The need to store only these large coefficients means that the
+memory requirement is reduced. Further, the multiplication of the sensitivity
+with a vector can be carried out by a sparse multiplication in the wavelet
+domain. This greatly reduces the CPU time. Since the matrix-vector
+multiplication constitutes the core computation of the inversion, the CPU time
+for the inverse solution is reduced accordingly. The use of this approach
+increases the size of solvable problems by nearly two orders of magnitude.
 
 Let :math:`\mathbf{G}` be the sensitivity matrix and :math:`\mathcal{W}` be the symbolic matrix-representation of the 3D wavelet transform. Then applying the transform to each row of :math:`\mathbf{G}` and forming a new matrix consisting of rows of transformed sensitivity is equivalent to the following operation:
 
@@ -474,10 +497,18 @@ where :math:`\delta _i` is the threshold level, and :math:`\widetilde{g}_{ij}` a
     r_i(\delta_i)=\sqrt{\frac{\underset{\left | {\widetilde{g}_{ij}} \right| <\delta_i}\sum{\widetilde{g}_{ij}}^2}{\underset{j}\sum{\widetilde{g}_{ij}^2}}}, ~~i=1,\ldots,N,
     :label: rhoi
 
-Here the numerator is the norm of the discarded coefficients and the denominator is the norm of all coefficients. The threshold level :math:`\delta_{i_0}` is calculated on a representative row, :math:`i_0`. This threshold is then used to define a relative threshold :math:`\epsilon =\delta_{i_{o}}/ \underset{j}{\max}\left | {\widetilde{g}_{ij}} \right |`. The absolute threshold level for each row is obtained by
+Here the numerator is the norm of the discarded coefficients and the
+denominator is the norm of all coefficients. The threshold level
+:math:`\delta_{i_0}` is calculated on a representative row, :math:`i_0`. This
+threshold is then used to define a relative threshold :math:`\epsilon
+=\delta_{i_{o}}/ \underset{j}{\max}\left | {\widetilde{g}_{ij}} \right |`. The
+absolute threshold level for each row is obtained by
 
 .. math::
    \delta_i = \epsilon \underset{j}{\max}\left | {\widetilde{g}_{ij}} \right|, ~~i=1,\ldots,N.
    :label: deltai
 
-The program that implements this compression procedure is MAGSEN3D. The user is asked to specify the relative error :math:`r^*` and the program will determine the relative threshold level :math:`\delta_i`. Usually a value of a few percent is appropriate for :math:`r^*`. When both surface and borehole data are present, two different relative threshold levels are calculated by choosing a representative row for surface data and another for borehole data. For experienced users, the program also allows the direct input of the relative threshold level.
+The program that implements this compression procedure is MVISEN. For
+experienced users, the program also allows the direct input of the relative
+threshold level, but it is recommended to let the program determine the optimal
+compression accuracy.
