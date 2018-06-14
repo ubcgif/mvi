@@ -46,7 +46,7 @@ Highlights of changes from version 2.0
 --------------------------------------
 
 	- Distance weights are calculated directly from the sensitivity matrix and no longer requires to run the PFWEIGHT program
-	- Length scales used in the differential operators are set internally based on the mesh cell dimension. The default values for :math:`\alpha_s` is now 1.
+	- Length scales used in the differential operators are set internally based on the mesh cell dimension. **The default values for :math:`\alpha_s` is now 1.**
 	- Speedup of the MVI-Spherical formulation through an approximated sensitivity calculation.
 	- Compression of the sensitivity available for both the MVI-Cartesian and MVI-Spherical. Default threshold tolerance determined iteratively favoring lowest compression error.
 

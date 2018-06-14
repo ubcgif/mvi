@@ -86,16 +86,16 @@ The parameters within the control file are:
 
 - :math:`\alpha_s, \alpha_x, \alpha_y, \alpha_z`: Coefficients for the each model component. :math:`\alpha_s` is the smallest model component. Coefficient for the derivative in the easting direction. :math:`\alpha_y` is the coefficient for the derivative in the northing direction. The coefficient :math:`\alpha_z` is for the derivative in the vertical direction.
 
-   If ``null`` is entered on this line, then the above four parameters take the following default values:  :math:`\alpha_s = 0.0001, \alpha_x = \alpha_y = \alpha_z = 1`. All alphas must be positive and they cannot be all equal to zero at the same time.
+   If ``null`` is entered on this line, then the above four parameters take the following default values:  :math:`\alpha_s = \alpha_x = \alpha_y = \alpha_z = 1`. All alphas must be positive and they cannot be all equal to zero at the same time.
 
-   **NOTE:** The four coefficients in line 9 of the control file may be substituted for three corresponding *length scales* :math:`L_x, L_y` and :math:`L_z` and are in units of metres. To understand the meaning of the length scales, consider the ratios :math:`\alpha_x/\alpha_s`, :math:`\alpha_y/\alpha_s` and :math:`\alpha_z/\alpha_s`. They generally define smoothness of the recovered model in each direction. Larger ratios result in smoother models, smaller ratios result in blockier models. The conversion from :math:`\alpha`\'s to length scales can be done by:
+   **NOTE:** The four coefficients in line 9 of the control file may be substituted for three corresponding *length scales* :math:`L_x, L_y` and :math:`L_z` and are in units of metres. They generally define smoothness of the recovered model in each direction. Larger ratios result in smoother models, smaller ratios result in blockier models. Internally, the length scales are converted back to :math:`\alpha`-values such that:
 
    .. math::
 
       \label{eq:lengths}
-      L_x = \sqrt{\frac{\alpha_x}{\alpha_s}} ; ~L_y = \sqrt{\frac{\alpha_y}{\alpha_s}} ; ~L_z = \sqrt{\frac{\alpha_z}{\alpha_s}}
+      \alpha_s = \left(\frac{1}{L}\right)^2 ; \alpha_x = \left(\frac{L_x}{L}\right)^2; \alpha_y = \left(\frac{L_y}{L}\right)^2 ; \alpha_z = \left(\frac{L_z}{L}\right)^2
 
-   When user-defined, it is preferable to have length scales exceed the corresponding cell dimensions. Typically having length scales of four cell widths are a good starting point.
+   where :math:`L = max[L_x, L_y, L_z]`. When user-defined, it is preferable to have length scales exceed the corresponding cell dimensions.
 
 - ``remGamma``: This is a number that places (de-)emphasis on the remenant magnetization components (and extra scaling of **S,T** compents versus **P**). If ``null`` is chosen, the trade-off between induced and remanent components are 0.5. The higher the number, the stronger the inversion will try to recover an induced model.
 
@@ -113,29 +113,53 @@ The parameters within the control file are:
 
 - ``VALUE Ps Qx Qy Qz``: The Lp/Lq exponents for the **phi angle** (P: zenith angle). The Lp constant is ignored. *The mode must be 2 or 3 and this line is not required if mode=1.*  ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. Qs are on the spatial components of the model objective function.
 
-- ``scale,eps,epsGrad``: The scaling between Lp and Lq components in range :math:`[0,1]`. ``eps`` is an effective zero for the amplitude values. ``epsGrad`` is an effective zero value for the change in amplitude spatially (i.e., derivatives). The program will calculate these zeros based on a single standard deviation of the L2 model if ``null`` is given with no extra scaling between Lp and Lq (``scale = 0.5``).
-
     **NOTE**: This line is only incorporated for the amplitude. The smallest model component is turned off for the Lp with the two angles, theta and phi. The gradient effective zero is set to two and five degrees for theta and phi, respectively.
 
 
 Example of control file
 ~~~~~~~~~~~~~~~~~~~~~~~
++----+-------------------+------------------------------------------------------------------+
+|Line|  Input            |  Description                                                     |
++====+===================+==================================================================+
+|1   |  mode             | 1(PST), 2 (ATP)                                                  |
++----+-------------------+------------------------------------------------------------------+
+|2   |  invMode          | 1 (Target misfit), 2 (Fix beta)                                  |
++----+-------------------+------------------------------------------------------------------+
+|3   |  par, tolc        | (Mode 1) Chifac, tol | (Mode2) Value                             |
++----+-------------------+------------------------------------------------------------------+
+|4   |  obs              | Observation file                                                 |
++----+-------------------+------------------------------------------------------------------+
+|5   |  matrixFile       | Sensitivity matrix file                                          |
++----+-------------------+------------------------------------------------------------------+
+|6   |  init             | Starting model file | VALUE [p s t]                              |
++----+-------------------+------------------------------------------------------------------+
+|7   |  ref              | Reference model file | VALUE [p s t]                             |
++----+-------------------+------------------------------------------------------------------+
+|8   |  act              | Active cell file | null                                          |
++----+-------------------+------------------------------------------------------------------+
+|9   |  lowerBounds      | Lower bound file | VALUE :math:`[b^l_p b^l_s b^l_t]`             |
++----+-------------------+------------------------------------------------------------------+
+|10  |  upperBounds      | Upper bound values | VALUE :math:`[b^u_p b^u_s b^u_t]`           |
++----+-------------------+------------------------------------------------------------------+
+|11  |  scalings         | :math:`\alpha_s \alpha_x \alpha_y \alpha_z` | Lx Ly Lz | null    |
++----+-------------------+------------------------------------------------------------------+
+|12  |  remGamma         | Trade-off induced/remanence (PST)                                |
++----+-------------------+------------------------------------------------------------------+
+|13  |  SMOOTH_MOD       | Refence model in gradient term                                   |
++----+-------------------+------------------------------------------------------------------+
+|14  |  w1.dat           |   P weighting file | null                                        |
++----+-------------------+------------------------------------------------------------------+
+|15  |  w2.dat           |   S weighting file | null                                        |
++----+-------------------+------------------------------------------------------------------+
+|16  |  w3.dat           |   T weighting file | null                                        |
++----+-------------------+------------------------------------------------------------------+
+|17  |  VALUE Ps Px Py Pz| Norm on amplitude   | null                                       |
++----+-------------------+------------------------------------------------------------------+
+|18  |  VALUE Ps Px Py Pz| Norm on theta angle | null                                       |
++----+-------------------+------------------------------------------------------------------+
+|19  |  VALUE Ps Px Py Pz| Norm on phi angle   | null                                       |
++----+-------------------+------------------------------------------------------------------+
 
-Below is an example of a control file to run **P,S,T** mode (like VOXI):
-
-.. figure:: ../../images/mviinvExPST.png
-     :align: center
-     :figwidth: 75%
-
-
-Below is another example of a control file. In this case trying to recover a sparse, but smoothly varying amplitude.
-
-.. figure:: ../../images/mviinvExATP.png
-     :align: center
-     :figwidth: 75%
-
-
-**NOTE**: Although one can run **ATP** (MVI-S) mode in smoothness only, it is designed to be a means-to-an-end for sparse and blocky models. The smooth result will be very similar to the **PST** (MVI-C) mode but run much slower due to its non-uniqueness and non-linearity.
 
 
 Output files
@@ -155,5 +179,5 @@ Seven general output files are created by the inversion. They are:
 
 #. ``mviinv_xxx.fld``: Recovered magnetization vector for the "xxx" iteration in an `model vector file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ format
 
-#. ``mviinv_xxx.pre``: :ref:`Predicted data files <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ (without uncertainties) output for the "xxx" iteration.
+#. ``mviinv_xxx.pre``: `Predicted data files <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ (without uncertainties) output for the "xxx" iteration.
 

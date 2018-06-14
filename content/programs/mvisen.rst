@@ -41,13 +41,14 @@ The input parameters for the control file are:
 
      **NOTE** The detailed explanation of threshold level and reconstruction error can be found in the :ref:`wavelet section <waveletSection>` of this manual.
 
+.. note:: An example can be found here
 
-Example of input file
-~~~~~~~~~~~~~~~~~~~~~
+.. Example of input file
+.. ~~~~~~~~~~~~~~~~~~~~~
 
-.. figure:: ../../images/mvisenEx.png
-     :align: center
-     :figwidth: 50%
+.. .. figure:: ../../images/mvisenEx.png
+..      :align: center
+..      :figwidth: 50%
 
 
 Output files

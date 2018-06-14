@@ -192,7 +192,7 @@ written as
 
 .. math::
   \phi = \phi_d + \beta \phi_m
-  = \| \mathbf{W}_d \mathbb{F}(\mathbf{m}) - \mathbf{d}^{obs}\|_2^2 +\beta \sum_{i = s,x,y,z}  {\|\mathbf{W_i}(\mathbf{m-m_{ref}})\|}^2_2 \;,
+  = \| \mathbf{W}_d (\mathbb{F}(\mathbf{m}) - \mathbf{d}^{obs})\|_2^2 +\beta \sum_{i = s,x,y,z}  {\|\mathbf{W_i}(\mathbf{m-m_{ref}})\|}^2_2 \;,
 
 where :math:`\mathbf{W}_i` are functions measuring the deviation of the model
 :math:`\mathbf{m}` to a reference :math:`\mathbf{m_{ref}}` or the roughness
@@ -263,6 +263,8 @@ The first question that arises in the inversion of magnetic data concerns
 definition of the "model". The MVI program allows for the inversion of a magnetization vector defined in
 either Cartesian or Spherical coordinate systems :cite:`Lelievre2009a`. We define both systems below.
 
+.. _MVIC:
+
 Cartesian (PST)
 """""""""""""""
 
@@ -298,6 +300,9 @@ The drawback is that both the direction and the magnitude of magnetization are
 coupled in the vector components, which makes it harder to impose constraints
 on the magnetization vector, either through sparsity and petrophysical constraints.
 
+
+.. _MVIS:
+
 Spherical (ATP)
 """""""""""""""
 
@@ -305,6 +310,7 @@ As an alternative, the Cartesian formulation, the magnetization vector can be
 expressed in terms of amplitude (:math:`\alpha`) and two orientation angles
 (:math:`\theta,\;\phi`) (ATP).
 
+.. _trig:
 .. math::
   x =& \alpha \; cos(\phi)\;cos(\theta) \\
   y  =   & \alpha \; cos(\phi)\;sin(\theta) \\
@@ -427,7 +433,7 @@ rapidly diminishing amplitude, the kernels of magnetic data are not sufficient
 to generate a function that possess significant structure at locations that
 are far away from observations.
 
-Moreover, the trigonometric transformation associated
+Moreover, the :ref:`trigonometric transformation<trig>` associated
 with the Spherical formulation introduces rapid changes in the sensitivity
 function, which affects the convergence of the algorithm.
 
@@ -437,7 +443,7 @@ regularization to adjust the relative influence of the misfit and
 regularization functions. While previous version of the ``MAG3D`` and ``MVI``
 made use of a depth or distance weighting, in this version we calculate the
 weights directly from the sensitivity matrix. We define the sensitivity
-weights as follow
+weights as follow:
 
 .. math::
   \mathbf{W_r} &= diag \left( {\left[{\mathbf{\hat w_r}}\right]}^{1/2}\right)\\
