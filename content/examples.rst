@@ -3,12 +3,13 @@
 Examples
 ========
 
-In this section, we present synthetic examples to illustrate forward modelling
-and inversion of magnetic vector models.  The example is made up of three
-magnetic block, 120 m in side, placed 85 meters below a grid of observation
-points. The blocks are magnetized along different directions, giving rise to
-magnetic field presented below. The resulting TMI data and a perspective view
-of the three magnetized blocks are shown below.
+In this section, we present a simple synthetic examples to illustrate forward
+modelling and inversion of magnetic vector models. For more in-depth training
+material, please visit our `AtoZ example <http://giftoolscookbook.readthedocs.io/en/latest/content/AtoZ/magnetic/index.html>`_ that covers this topic.
+
+The example is made up of three magnetic block, 120 m in side, placed 85
+meters below a grid of observation points. The blocks are magnetized along
+different directions, giving rise to the TMI magnetic data presented below.
 
 This example including the model and simulated data can be `downloaded
 here <https://github.com/ubcgif/mvi/raw/v3/examples/TripleBlocks.zip>`_.

@@ -8,12 +8,14 @@ MVI package
 
 MIV is a program library for carrying out forward modelling and inversion of
 magnetic data solving for the full magnetization vector, either in Cartesian
-or Spherical coordinate systems.
-The contents of this manual are as follows:
+or Spherical coordinate systems. Please visit the :ref:`Example<examples>`
+provided and the `AtoZ Tutorial <http://giftoolscookbook.readthedocs.io/en/lat
+est/content/AtoZ/magnetic/index.html>`_ for more details. The contents of this
+manual are as follows:
 
 .. toctree::
     :numbered:
-    :maxdepth: 2
+    :maxdepth: 1
 
     Overview <content/overview>
     Background Theory <content/theory>
