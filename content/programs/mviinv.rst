@@ -3,7 +3,7 @@
 MVIINV
 ======
 
-This program actually performs the 3D inversion of magnetic data to recover magnetic vectors. Command line usage is:
+This program performs the 3D inversion of magnetic data to recover magnetic vectors as effective susceptibilities. The command line syntax for running this code is:
 
 ``mviinv mviinv.inp [nThreads]``
 
@@ -16,7 +16,7 @@ The argument specifying the number of CPU threads used in the OpenMP format is o
 Input files
 -----------
 
-Input files can be any file name. If there are spaces in the path or file name, you *MUST* use quotes around the entire path (including the filename). Files that may be used by the inversion are:
+Input files can be given any name. If there are spaces in the path or file name, you *MUST* use quotes around the entire path (including the filename). Files that may be used by the inversion are:
 
 #. ``obs.mag``: Mandatory `observations file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_.
 
@@ -60,7 +60,7 @@ The parameters within the control file are:
 
    #. ``invMode=3``: The user gives the trade-off parameter (``par``) and the initial model  from an **A,T,P** L2 inversion (``mode=2``) is used (and required) and the program will automatically go to the Lp/Lq solves. *This mode only runs the A,T,P formulation for Lp/Lq.*
 
-- ``par``, ``tolc`` Two real numbers that are dependent upon the value of mode.
+- ``par``, ``tolc`` Two real numbers that are dependent upon the value of ``mode``.
 
    #. ``mode=1``: the target misfit value is given by the product of ``par`` and the number of data :math:`N` , i.e., ``par=1`` is equivalent to :math:`\phi_d^*=N` and ``par=0.5`` is equivalent to :math:`\phi_d^*=N/2` . The second parameter, ``tolc``, is the misfit tolerance in fractional percentage. The target misfit is considered to be achieved when the relative difference between the true and target misfits is less than ``tolc``. Normally, ``par=1`` is ideal if the true standard deviation of error is assigned to each datum. When ``tolc=0``, the program assumes a default value of ``tolc=0.02`` since this number must be positive.
 
@@ -72,7 +72,7 @@ The parameters within the control file are:
 
 -  ``obs``: Input `data file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_. The file must specify the standard deviations of the error. By definition these values are greater than zero.
 
--  ``matrixFile``: The binary file of sensitivities created by :ref:`mvisen`.
+-  ``matrixFile``: The binary file containing the sensitivities created by :ref:`mvisen`.
 
 -  ``init``: The initial magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 0.001 0.001 0.001``), or by a filename. There must be three values (P,S,T) if this option is used. Each component must be within the upper and lower bounds.
 
@@ -84,7 +84,7 @@ The parameters within the control file are:
 
 - ``upperBounds``: The reference magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 1 1 1``), or by a filename. There must be three values (P,S,T) if this option is used. For example, a P value of 1 is a magnetization in the inducing field direction with an amplitude of 1 SI.
 
-- :math:`\alpha_s, \alpha_x, \alpha_y, \alpha_z`: Coefficients for the each model component. :math:`\alpha_s` is the smallest model component. Coefficient for the derivative in the easting direction. :math:`\alpha_y` is the coefficient for the derivative in the northing direction. The coefficient :math:`\alpha_z` is for the derivative in the vertical direction.
+- :math:`\alpha_s, \alpha_x, \alpha_y, \alpha_z`: Coefficients for the each model component. :math:`\alpha_s` is the smallest model component. :math:`\alpha_x` is the coefficient for the derivative in the easting direction. :math:`\alpha_y` is the coefficient for the derivative in the northing direction. The coefficient :math:`\alpha_z` is for the derivative in the vertical direction.
 
    If ``null`` is entered on this line, then the above four parameters take the following default values:  :math:`\alpha_s = \alpha_x = \alpha_y = \alpha_z = 1`. All alphas must be positive and they cannot be all equal to zero at the same time.
 
@@ -97,7 +97,7 @@ The parameters within the control file are:
 
    where :math:`L = max[L_x, L_y, L_z]`. When user-defined, it is preferable to have length scales exceed the corresponding cell dimensions.
 
-- ``remGamma``: This is a number that places (de-)emphasis on the remenant magnetization components (and extra scaling of **S,T** compents versus **P**). If ``null`` is chosen, the trade-off between induced and remanent components are 0.5. The higher the number, the stronger the inversion will try to recover an induced model.
+- ``remGamma``: This is a number that places (de-)emphasis on the remenant magnetization components (and extra scaling of **S,T** compents versus **P**). If ``null`` is chosen, the trade-off between induced and remanent components are all 0.5. The higher the number, the stronger the inversion will try to recover an induced magnetization model.
 
 - ``SMOOTH_MOD``: This option was not available in previous versions of the code and can be used to define the reference model in and out of the derivative terms. The options are: ``SMOOTH_MOD_DIF`` (reference model is defined in the derivative terms) and ``SMOOTH_MOD`` (reference model is defined in only the smallest term). See equation :eq:`mof` for details.
 

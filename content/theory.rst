@@ -453,6 +453,7 @@ weights as follow:
 where the superscript :math:`(k)` is an iteration index and :math:`\delta` is
 a small number added to avoid singularity.
 
+.. _waveletSection:
 
 Wavelet Compression of Sensitivity Matrix
 -----------------------------------------

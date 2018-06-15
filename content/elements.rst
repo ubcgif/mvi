@@ -1,24 +1,25 @@
 Elements of the program MVI
 ===========================
 
-The program library consists of the three programs:
+The program library consists of three executables:
 
-#. :ref:`MVIFWD<mvifwd>`: Performs forward modeling of magnetic data from a 3-components vector model
+#. :ref:`MVIFWD<mvifwd>`: Performs forward modeling of magnetic data from a 3-components effective susceptibility model
 
 #. :ref:`MVISEN<mvisen>`: Calculates sensitivities for the inversion
 
 #. :ref:`MVIINV<mviinv>`: Performs magnetic vector inversion of magnetic data in 3D.
 
-Each of the above programs requires input files and the specification of
-parameters in order to run. However, some files are used by a number of UBC
-programs. Before detailing the procedures for running each of the above
-programs, we first present information about these general files.
+Each of the above programs requires an input file, supporting files and the specification of certain
+parameters in order to run. Before detailing the procedures for running each of the above
+programs, we first present information about the formats of the supporting files. 
+Some files pertaining to this program library are formatted the same as files used by other UBC programs. 
+
+.. _elements_gen:
 
 General files used by MVI
 -------------------------
 
-The MVI programs rely on the general files in UBC-format. Input files
-can have any user-defined name and extension.
+The MVI programs rely on UBC-formatted supporting files. These files can have any user-defined name and extension. Formatting for each of the following supporting files is explained within the GIFtools cookboook:
 
  - `Mesh <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/mesh3Dfile.html>`_
  - `Topography <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/topoGIF3Dfile.html>`_

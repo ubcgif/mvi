@@ -3,16 +3,16 @@
 MVIFWD
 ======
 
-This program performs forward modelling. Command line usage:
+This program performs forward modelling; i.e. predicts magnetic data for a magnetic vector model. Command line syntax for running the program is:
 
 ``mvifwd mesh.msh obs.loc model.fld [topo.dat]``
 
-and will create the forward modelled data file ``mvifwd.mag``.
+Predicted data are output into a file called ``mvifwd.mag``.
 
 Input files
 -----------
 
-All files are in ASCII text format - they can be read with any text editor. Input files can have any name the user specifies. Details for the format of each file can be found in Section [Elements]. The files associated with are:
+All files are in ASCII text format, thus they can be read with any text editor. Input files can have any name the user specifies. Details regarding the format of each file can be found in the :ref:`elements section<elements_gen>`. The files associated with MVIFWD are:
 
 - ``mesh.msh``: The `3D mesh <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/mesh3Dfile.html>`_
 
@@ -25,6 +25,5 @@ All files are in ASCII text format - they can be read with any text editor. Inpu
 Output file
 -----------
 
-The created file is ``mvifwd.mag``. The file format is that of the `observation <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ without the associated standard deviations. The forward
-modelled data are in **nT**.
+Predicted data are output into a file called ``mvifwd.mag``. The file format is that of the `observation <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ file without the associated standard deviations. The forward modelled data are in **nT**.
 
