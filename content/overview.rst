@@ -3,21 +3,20 @@
 MVI Package Overview
 ====================
 
-MVI is a program library for carrying out forward modelling and inversion
-of magnetic data for the full magnetization vector in a
-three dimensional Earth. The program library carries out the following
-functions:
+The magnetic vector inversion (MVI) package is a program library for carrying out 3D forward modelling and inversion
+of magnetic data for the full magnetization vector.
+The program library is comprised of the following executables:
 
-#. :ref:`MVIFWD<mvifwd>`: Forward modelling of the magnetic field anomaly response of a 3D
-   volume of susceptibility contrast.
+#. :ref:`MVIFWD<mvifwd>`: Forward modelling of the magnetic anomaly response for a 3D
+   distribution of magnetized volumes.
 
-#. :ref:`MVISEN<mvisen>`: Calculates sensitivities for the inversion. The model is specified in the mesh of rectangular cells, each with three components magnetic vectors.
-   Topography is included in the mesh.
+#. :ref:`MVIINV<mviinv>`: Performs the 3D magnetic vector inversion for magnetic anomaly data. The model is defined on a mesh of rectangular cells and is comprised of the effective susceptibilities in 3 orthogonal directions for each cell.
 
-#. :ref:`MVIINV<mviinv>`: Performs magnetic vector inversion of magnetic data in 3D.
+#. :ref:`MVISEN<mvisen>`: Calculates the sensitivities for the inversion.
 
-.. note:: -  This code recovers the total magnetization vector including the combined contribution of induced fields (susceptibility), self-demagnetization and remenance.
-   	      -  Inversion can be carried out in Cartesian (p,s,t) and Spherical (a,t,p) coordinate systems, but sparsity constraints can only be applied on the Spherical (atp) formulation.
+.. note:: -  This code recovers the total magnetization vector in terms of effective susceptibility.
+          -  The code models the combined contribution of induced fields (susceptibility), self-demagnetization and remenance.
+          -  Inversion can be carried out in Cartesian (p,s,t) and Spherical (a,t,p) coordinate systems, but sparsity constraints can only be applied on the Spherical (atp) formulation.
 
 Licensing
 ---------
@@ -31,11 +30,11 @@ Licensing for commercial use is managed by third party distributors. Details are
 Installing
 ----------
 
-There is no automatic installer currently available for this package. Please follow the following steps in order to use the software:
+There is no automatic installer currently available for this package. Please carry out the following steps in order to use the software:
 
-#. Extract all files provided from the given zip-based archive and place them all together in a new folder such as
+#. Extract all files provided from the given zip-based archive and place them all together in a new folder
 
-#. Add this directory as new path to your environment variables.
+#. Add the path to the new folder to your environment variables.
 
 Two additional notes about installation:
 
@@ -45,10 +44,10 @@ Two additional notes about installation:
 Highlights of changes from version 2.0
 --------------------------------------
 
-	- Distance weights are calculated directly from the sensitivity matrix and no longer requires to run the PFWEIGHT program
-	- Length scales used in the differential operators are set internally based on the mesh cell dimension. **The default values for :math:`\alpha_s` is now 1.**
-	- Speedup of the MVI-Spherical formulation through an approximated sensitivity calculation.
-	- Compression of the sensitivity available for both the MVI-Cartesian and MVI-Spherical. Default threshold tolerance determined iteratively favoring lowest compression error.
+    - Distance weights are calculated directly from the sensitivity matrix; as a result, the user is no longer required to run the PFWEIGHT program.
+    - Length scales used in differential operators are set internally based on the mesh cell dimensions. **The default values for** :math:`\boldsymbol{\alpha_s}` **is now 1.**
+    - An approximated sensitivity calculation is now used to speed up the code for the MVI-Spherical formulation.
+    - Compression of the sensitivities both the MVI-Cartesian and MVI-Spherical formulations is now available. Default threshold tolerances are determined iteratively, and favoring lowest compression error.
 
 .. raw:: html
     :file: ./BlockVersions.html

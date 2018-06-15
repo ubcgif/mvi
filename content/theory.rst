@@ -4,8 +4,8 @@ Background theory
 Introduction
 ------------
 
-This manual presents theoretical background, numerical examples, and
-explanation for implementing the program library MVI. This suite of
+Here we present the theoretical background of the magnetic problem, numerical examples, and
+details regarding the algorithms used by the MVI program library. This suite of
 algorithms, developed at the UBC-Geophysical Inversion Facility, is used to
 invert magnetic responses over a three-dimensional vector magnetization model. The
 manual is designed to help geophysicist who may be familiar with the magnetic
@@ -17,22 +17,22 @@ theory.
 Magnetic Data
 -------------
 
-The data from a typical magnetic survey are a set of Total Magnetic Intensity (TMI)
-measurements acquired over a 2D grid above the surface. The observed magnetic datum :math:`b^{TMI}` can be written as:
+Magnetic survey data are generally comprised of a set of total magnetic intensity (TMI)
+measurements acquired above the Earth's surface; although borehole data are sometime collected. The observed magnetic datum :math:`b^{TMI}` can be written as:
 
 .. math:: b^{TMI} =   |\mathbf{B}_0 + \mathbf{B}_A|
 
-where both the Earth's field :math:`\mathbf{B}_0` and the anomalous fields :math:`\mathbf{B}_A` from magnetized rocks
+where both the Earth's field :math:`\mathbf{B}_0` and the anomalous fields :math:`\mathbf{B}_A` from magnetized bodies
 are recorded. The goal of the magnetic inversion is to obtain information
-about the distribution of the magnetization in the ground from the anomalous
-data. The assumption is made that the anomalous field is small compared to
-Earth's field and assumed to be parallel
+about the distribution of subsurface magnetization from the data. The assumption is usually made that the anomalous field is small compared to
+Earth's field, thus the following is true:
 
 .. math::
     \mathbf{B}_A \approx (\mathbf{B}_A \cdot \mathbf{\hat B}_0)\; \mathbf{\hat B}_0
     :label: projBa
 
-The Total Magnetic Anomaly can then be defined as
+where :math:`\bf{\hat B}_0` is the unit vector in the direction of Earth's field.
+The Total Magnetic Anomaly can therefore be defined as
 
 .. math:: {b^{TMA}} = b^{TMI} - |\mathbf{B}_0|\;,
 
@@ -47,8 +47,8 @@ Forward modelling
 General formulation
 ~~~~~~~~~~~~~~~~~~~
 
-The anomalous field produced by the distribution of magnetization
-:math:`\mathbf{J}` given by the following integral equation with a dyadic
+The anomalous field produced by a distribution of magnetization
+:math:`\mathbf{M}` is given by the following integral equation, where the integrand is comprised of a dyadic
 Green's function:
 
 .. math::
@@ -56,30 +56,28 @@ Green's function:
    :label: greensf
 
 
-where :math:`\mathbf{r}` is the position of the observation point and
-:math:`V` represents the volume of magnetization at its position,
+where :math:`\mathbf{r}` is the observation location and
+:math:`V` represents the volume of magnetization at source locations
 :math:`\mathbf{r}_0`. The above equation is valid for observation locations
-above the earth's surface.
+above the earth's surface; i.e. outside the region of magnetization.
 
-Rocks magnetization :math:`\mathbf{M}` comprises three main components:
+The total magnetization exhibited by a rock :math:`\mathbf{M}` is comprised of three components:
 
 .. math::
 	\mathbf{M} = \kappa \left( \mathbf{H}_0 + \mathbf{H}_s \right) + \mathbf{M}_r\;,
 	:label: magnetization
 
-where the induced response depends on the magnetic susceptibility
-:math:`\mathbf{m}` of rocks, Earth's primary field :math:`\mathbf{H_0}`, secondary
-ambient fields :math:`\mathbf{H_s}` (self- demagnetization) and possible
-remanent components :math:`\mathbf{M_r}`. The magnetized material gives
-rise to a magnetic flux :math:`\mathbf{B}_A`.
-The magnetic flux and the magnetic field are related by the magnetic permeability of free-
+where :math:`\boldsymbol{\kappa}` is the magnetic susceptibility of the rock, :math:`\mathbf{H_0}` is the Earth's primary field, :math:`\mathbf{H_s}` represents any ambient secondary (self-demagnetizing) fields and :math:`\mathbf{M_r}` represents the contribution due to magnetic remanence. The total induced magnetization is given by :math:`\boldsymbol{\kappa (H_0 + H_s)}`.
+
+The magnetization of an object produces a magnetic flux.
+Outside the magnetized body, the magnetic flux density :math:`\mathbf{B}` and the magnetic field :math:`\mathbf{H}` are related by the magnetic permeability of free-
 space  :math:`\mu_0` such that:
 
-.. math:: \mathbf{H}_0=\mathbf{B}_0 / \mu_0
+.. math:: \mathbf{H}=\mathbf{B} / \mu_0
 
 
 When the susceptibility is constant within a volume of source region, the
-above equation can be written in matrix form as:
+Eq. :eq:`greensf` can be written in matrix form as:
 
 .. math::
    \mathbf{B}_A=\mu_0\left( \begin{array}{ccc}
@@ -97,7 +95,7 @@ The tensor :math:`\mathbf{T}_{ij}` is given by
     :label: tij
 
 
-and where :math:`x_1`, :math:`x_2`, and :math:`x_3` represent :math:`x-, y-`,
+where :math:`x_1`, :math:`x_2`, and :math:`x_3` represent :math:`x-, y-`,
 and :math:`z-`\ directions, respectively. The expressions of
 :math:`\mathbf{T}_{ij}` for a cuboidal source volume can be found in
 :cite:`Bhattacharyya64` and :cite:`Sharma66`. Since :math:`\mathbf{T}` is
@@ -105,11 +103,9 @@ symmetric and its trace is equal to :math:`-1` when the observation is inside
 the cell and is :math:`0` when the observation is outside the cell, only five
 independent elements need to be calculated.
 
-Once :math:`\mathbf{T}` is formed, the magnetic anomaly :math:`\mathbf{B}_A`
-and its projection onto any direction of measurement are easily obtained by
-the inner product with the directional vector. The projection of the field
-:math:`\mathbf{B}_A` onto different directions yields different anomalies
-commonly obtained in the magnetic survey. For instance, the vertical anomaly
+Once :math:`\mathbf{T}` is formed, the magnetic anomaly :math:`\mathbf{B}_A` is easily obtained. Furthermore, its projection along any measurement direction is easily obtained by taking the inner product with the directional vector. The projection of the field
+:math:`\mathbf{B}_A` along different directions yields different anomalies
+commonly obtained in magnetic surveys. For instance, the vertical anomaly
 is simply :math:`B_{A_z}`, the vertical component of :math:`\mathbf{B}_A`,
 whereas the total field anomaly is, to first order, the projection of
 :math:`\mathbf{B}_A` onto the direction of the inducing field
@@ -128,16 +124,19 @@ We use a right-handed coordinate system with *z*-axis pointing down. By
 equation :eq:`magnetization`, we divide the region of interest into a set of
 3D prismatic cells and assume a constant magnetization within each cell from
 which we calculate the total anomalous field using equations :eq:`projBa` and
-:eq:`bmatrix`. As input parameters in the `data file <http://giftoolscookbook.
-readthedocs.io/en/latest/content/fileFormats/magfile.html>`_, the coordinates
-of the observation points and the inclination and declination of the anomaly
+:eq:`bmatrix`. As input parameters within the `data file <http://giftoolscookbook.
+readthedocs.io/en/latest/content/fileFormats/magfile.html>`_, the coordinates, inclination and declination of the anomaly
 direction must be specified for each datum.
 
-We can define the magnetization vector in terms of *effective susceptibility*
+We can define the magnetization vector in terms of an *effective susceptibility*
 :math:`\boldsymbol \kappa_e` along the Cartesian directions such that
 
 .. math::
-  \mathbf{M} = {H}_0 \boldsymbol \kappa_e \\
+  \mathbf{M} = {H}_0 \boldsymbol \kappa_e
+
+and
+
+.. math::
   \boldsymbol \kappa_e = \left[ \begin{array}{c} \boldsymbol \kappa_x \\ \boldsymbol \kappa_y \\ \boldsymbol \kappa_z \end{array} \right]
 
 Let the set of extracted anomaly data be :math:`\mathbf{d} =
@@ -152,7 +151,7 @@ the forward matrix
 The matrix has elements :math:`g_{ij}` which quantify the contribution to the
 :math:`i^{th}` datum due to a unit susceptibility in the :math:`j^{th}` cell.
 The calculation involves the evaluation of equation :eq:`tij` in a 3D
-rectangular domain define by each cell. This operation can be done by
+rectangular domain defined by each cell. This operation can be done by
 ``MAGFWR3D`` if only the data is required, or by ``MAGSEN3D`` if the forward
 matrix is stored on disk for the inversion. The :math:`G` matrix provides the
 forward mapping from the model to the data during the entire inverse process.
@@ -183,7 +182,7 @@ data misfit function. When the standard deviations of data errors are known,
 the acceptable misfit is given by the expected value :math:`\phi_d` and we
 will search for the value of :math:`\beta` via an L-curve criterion
 :cite:`Hansen00` that produces the expected misfit. Otherwise, a user-defined
-:math:`\beta` value is used. Bound are imposed through the projected gradient
+:math:`\beta` value is used. Bounds are imposed through the projected gradient
 method so that the recovered model lies between imposed lower
 (:math:`\mathbf{m}^l`) and upper (:math:`\mathbf{m}^u`) bounds.
 
@@ -195,7 +194,7 @@ written as
   = \| \mathbf{W}_d (\mathbb{F}(\mathbf{m}) - \mathbf{d}^{obs})\|_2^2 +\beta \sum_{i = s,x,y,z}  {\|\mathbf{W_i}(\mathbf{m-m_{ref}})\|}^2_2 \;,
 
 where :math:`\mathbf{W}_i` are functions measuring the deviation of the model
-:math:`\mathbf{m}` to a reference :math:`\mathbf{m_{ref}}` or the roughness
+:math:`\mathbf{m}` from a reference :math:`\mathbf{m_{ref}}` or the roughness
 measured along three orthogonal directions. The following sections provide
 additional details about the :ref:`misfit<misfit>` and the
 :ref:`regularization<regularization>` function.
@@ -206,7 +205,7 @@ Misfit function :math:`\phi_d`
 ------------------------------
 
 The first term in :eq:`globphi` defines a measure of how well
-the observed data are reproduced. Here we use the :math:`l_2`-norm measure
+the observed data are reproduced by a model :math:`\mathbf{m}`. Here we use the :math:`l_2`-norm measure
 
 .. math::
     \begin{aligned}
@@ -216,10 +215,10 @@ the observed data are reproduced. Here we use the :math:`l_2`-norm measure
 For the work here, we assume that the contaminating noise on the data is
 independent and Gaussian with zero mean. Specifying :math:`\mathbf{W}_d` to be
 a diagonal matrix whose :math:`i^{th}` element is :math:`1/\sigma_i`, where
-:math:`\sigma_i` is the standard deviation of the :math:`i^{th}` datum makes
+:math:`\sigma_i` is the standard deviation of the :math:`i^{th}` datum, makes
 :math:`\phi_d` a chi-squared distribution with :math:`N` degrees of freedom.
 The optimal data misfit for data contaminated with independent, Gaussian noise
-has an expected value of :math:`E[\chi^2]=N`, providing a target misfit for
+has an expected value of :math:`E[\chi^2]=N`, thus providing a target misfit for
 the inversion. We now have the components to solve the inversion as defined in
 equation :eq:`globphi`.
 
@@ -259,7 +258,7 @@ derivatives of the forward operation with respect to the *model*
 .. math::
   \mathbf{J} = \frac{\partial \mathbb{F}(\mathbf{m})}{\partial \mathbf{m}}
 
-The first question that arises in the inversion of magnetic data concerns
+The first question that arises during the inversion of magnetic data concerns the
 definition of the "model". The MVI program allows for the inversion of a magnetization vector defined in
 either Cartesian or Spherical coordinate systems :cite:`Lelievre2009a`. We define both systems below.
 
@@ -270,15 +269,15 @@ Cartesian (PST)
 
 The first choice is to define a model :math:`\mathbf{m}` in terms of effective
 magnetic susceptibility :math:`\boldsymbol \kappa_e` along a rotated coordinate
-system such that one of the component is aligned with the inducing field
-:math:`\mathbf{H}_0` such that
+system such that one of the components is aligned with the inducing field
+:math:`\mathbf{H}_0`. Thus
 
 .. math::
   \mathbf{M} = |{H}_0| \left[ \begin{array}{c} \boldsymbol \kappa_p \\ \boldsymbol \kappa_s \\ \boldsymbol \kappa_t \end{array} \right]\\
   \boldsymbol \kappa_{pst} = \Omega_\phi \Omega_\theta \boldsymbol \kappa_{xyz}
 
-where *p* (primary), *s* (secondary) and *t* (tertiary) define an
-orthogonal system that describe the magnetization vector in 3D. The matrices
+where *p* (primary), *s* (secondary) and *t* (tertiary) defines an
+orthogonal system that describes the magnetization vector in 3D. The matrices
 :math:`\Omega_\theta` and :math:`\Omega_\phi` define the rotation around the *z*-axis and *y*-axis respectively so that the
 *x*-axis points along the inducing field direction.
 
@@ -298,7 +297,7 @@ The sensitivity matrix :math:`\mathbf{J}` simplifies to
 The main advantage of this formulation is that the inversion remains linear.
 The drawback is that both the direction and the magnitude of magnetization are
 coupled in the vector components, which makes it harder to impose constraints
-on the magnetization vector, either through sparsity and petrophysical constraints.
+on the magnetization vector through sparsity and/or petrophysical constraints.
 
 
 .. _MVIS:
@@ -306,8 +305,8 @@ on the magnetization vector, either through sparsity and petrophysical constrain
 Spherical (ATP)
 """""""""""""""
 
-As an alternative, the Cartesian formulation, the magnetization vector can be
-expressed in terms of amplitude (:math:`\alpha`) and two orientation angles
+As an alternative to the Cartesian formulation, the magnetization vector can be
+expressed in terms of an amplitude (:math:`\alpha`) and two orientation angles
 (:math:`\theta,\;\phi`) (ATP).
 
 .. _trig:
@@ -342,7 +341,7 @@ problem have now been addressed through an automated sensitivity re-weighting
 strategy.
 
 Solving for model parameters in spherical coordinates comes with the increased
-flexibility however of constraining the amplitude and orientation
+flexibility, as the user constrains the amplitude and orientation
 independently. The reader is encouraged to visit the :ref:`examples<examples>`
 section.
 
@@ -355,9 +354,9 @@ Regularization
 We next discuss the construction of a model objective function which, when
 minimized, produces a model that is geophysically interpretable. This function
 gives the flexibility to incorporate as little or as much information as
-possible. At the minimum, it drives the solution towards a reference model
+possible. At minimum, it drives the solution towards a reference model
 :math:`\mathbf{m}_0` and requires that the model be relatively smooth in the three
-spatial directions. Let the model objective function be
+spatial directions. Let the model objective function expressed as
 
 .. _mof:
 .. math::
@@ -367,12 +366,12 @@ spatial directions. Let the model objective function be
 
 where the functions :math:`w_s`, :math:`w_x`, :math:`w_y` and :math:`w_z` are
 spatially dependent, while :math:`\alpha_s`, :math:`\alpha_x`,
-:math:`\alpha_y` and :math:`\alpha_z` are coefficients, which affect the
+:math:`\alpha_y` and :math:`\alpha_z` are coefficients which affect the
 relative importance between the *smallness* and three *smoothness* functions. The
 reference model is given as :math:`\mathbf{m_{ref}}` and :math:`w(\mathbf{r})` is
 a generalized sensitivity weighting function. The purpose of this function is to
-counteract the geometrical decay of the sensitivity with the distance from the
-observation location. The details of the
+counteract the geometrical decay of the sensitivities with respect to the distances from the
+observation locations. The details of the
 sensitivity weighting function will be discussed in the :ref:`next section<sensWeight>`.
 
 .. The objective function in equation :eq:`mof` has the flexibility to
@@ -397,18 +396,18 @@ sensitivity weighting function will be discussed in the :ref:`next section<sensW
 .. will allow for higher gradients there and thus provide a more geologic model
 .. that fits the data.
 
-Numerically, the model objective function in equation eq:`mof` is discretized
-onto the mesh defining the susceptibility model using a finite difference
+Numerically, the model objective function in equation Eq. :eq:`mof` is discretized
+onto the mesh defining the effective susceptibility model using a finite difference
 approximation. This yields:
 
 .. math::
     \phi_m({\mathbf{m}}) = \alpha_s \| \mathbf{W}_s \mathbf{R_s} ({\mathbf{m}}-{\mathbf{m_{ref}}})\|_2^2 + \sum_{i=x,y,z} \alpha_i \| \mathbf{W}_i \mathbf{R_i} \mathbf{G}_i (\mathbf{m}-\mathbf{m_{ref}}),
     :label: modobjdiscr
 
-where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are :math:`M`-length vectors
+where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are vectors of length :math:`3M`
 representing the recovered and reference models, respectively. The individual
 matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`, :math:`\mathbf{W}_y`, and
-:math:`\mathbf{W}_z` contains *user-defined* weights as well as the
+:math:`\mathbf{W}_z` contain *user-defined* weights as well as the
 sensitivity weighting functions :math:`w(\mathbf{r})`. The gradient matrices
 :math:`\mathbf{G}_x`, :math:`\mathbf{G}_y` and :math:`\mathbf{G}_z` are finite
 difference operators measuring the change in model values.
@@ -424,17 +423,17 @@ Sensitivity Weighting
 ----------------------
 
 It is a well-known fact that static magnetic data have no inherent depth
-resolution. A numerical consequence of this is that when an inversion is
-performed, which minimizes :math:`\int m(\mathbf{r})^2 dv`, subject to fitting
+resolution. Thus when an inversion is
+performed which minimizes :math:`\int m(\mathbf{r})^2 dv` subject to fitting
 the data, the constructed susceptibility is concentrated close to the
 observation locations. This is a direct manifestation of the kernel's decay
-with the distance between the cell and observation locations. Because of the
+with respect to the distance between the cell and observation locations. Because of the
 rapidly diminishing amplitude, the kernels of magnetic data are not sufficient
 to generate a function that possess significant structure at locations that
 are far away from observations.
 
 Moreover, the :ref:`trigonometric transformation<trig>` associated
-with the Spherical formulation introduces rapid changes in the sensitivity
+with the spherical formulation introduces rapid changes in the sensitivity
 function, which affects the convergence of the algorithm.
 
 
@@ -470,19 +469,19 @@ brief description of the method necessary for the use of the MVI library.
 Each row of the sensitivity matrix in a 3D magnetic inversion can be treated
 as a 3D image and a 3D wavelet transform can be applied to it. By the
 properties of the wavelet transform, most transform coefficients are nearly or
-identically zero. When coefficients of small magnitudes are discarded (the
+identically zero. When coefficients of small magnitude are discarded (the
 process of thresholding), the remaining coefficients still contain much of the
 necessary information to reconstruct the sensitivity accurately. These
 retained coefficients form a sparse representation of the sensitivity in the
 wavelet domain. The need to store only these large coefficients means that the
-memory requirement is reduced. Further, the multiplication of the sensitivity
+memory requirement is reduced. Furthermore, the multiplication of the sensitivity
 with a vector can be carried out by a sparse multiplication in the wavelet
 domain. This greatly reduces the CPU time. Since the matrix-vector
 multiplication constitutes the core computation of the inversion, the CPU time
 for the inverse solution is reduced accordingly. The use of this approach
 increases the size of solvable problems by nearly two orders of magnitude.
 
-Let :math:`\mathbf{G}` be the sensitivity matrix and :math:`\mathcal{W}` be the symbolic matrix-representation of the 3D wavelet transform. Then applying the transform to each row of :math:`\mathbf{G}` and forming a new matrix consisting of rows of transformed sensitivity is equivalent to the following operation:
+Let :math:`\mathbf{G}` be the sensitivity matrix and :math:`\mathcal{W}` be the symbolic matrix-representation of the 3D wavelet transform. Applying transform to each row of :math:`\mathbf{G}`, and forming a new matrix consisting of rows of transformed sensitivity, is equivalent to the following operation:
 
 .. math::
    \widetilde{\mathbf{G}}=\mathbf{G}\mathcal{W}^T,
@@ -497,7 +496,7 @@ where :math:`\widetilde{\mathbf{G}}` is the transformed matrix. The thresholding
    \end{cases}, ~~ i=1,\ldots,N,
    :label: elemg
 
-where :math:`\delta _i` is the threshold level, and :math:`\widetilde{g}_{ij}` and :math:`\widetilde{g}_{ij}^{s}` are the elements of :math:`\widetilde{\mathbf{G}}` and :math:`\widetilde{\mathbf{G}}^S`, respectively. The threshold level :math:`\delta _i` are determined according to the allowable error of the reconstructed sensitivity, which is measured by the ratio of norm of the error in each row to the norm of that row, :math:`r_i(\delta_i)`. It can be evaluated directly in the wavelet domain by the following expression:
+where :math:`\delta _i` is the threshold level, and :math:`\widetilde{g}_{ij}` and :math:`\widetilde{g}_{ij}^{s}` are the elements of :math:`\widetilde{\mathbf{G}}` and :math:`\widetilde{\mathbf{G}}^S`, respectively. The threshold levels :math:`\delta _i` are determined according to the allowable error of the reconstructed sensitivity, which is measured by the ratio of norm of the error in each row to the norm of that row, :math:`r_i(\delta_i)`. It can be evaluated directly in the wavelet domain by the following expression:
 
 .. math::
     r_i(\delta_i)=\sqrt{\frac{\underset{\left | {\widetilde{g}_{ij}} \right| <\delta_i}\sum{\widetilde{g}_{ij}}^2}{\underset{j}\sum{\widetilde{g}_{ij}^2}}}, ~~i=1,\ldots,N,
@@ -515,6 +514,6 @@ absolute threshold level for each row is obtained by
    :label: deltai
 
 The program that implements this compression procedure is MVISEN. For
-experienced users, the program also allows the direct input of the relative
-threshold level, but it is recommended to let the program determine the optimal
+experienced users, the program allows the direct input of the relative
+threshold level. However it is recommended newer users let the program determine the optimal
 compression accuracy.
