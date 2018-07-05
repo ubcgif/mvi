@@ -1,0 +1,19 @@
+2
+1
+1 0.02
+Obs_TMI_I45_D30.mag
+mviinv.mtx
+VALUE 0.0001 0.0001 0.0001
+VALUE 0.0 0.0 0.0
+null
+VALUE -1, -1, -1
+VALUE 1, 1, 1
+1.0 1.0 1.0 1.0
+1
+SMOOTH_MOD
+null
+null
+null
+VALUE 0 1 1 1
+VALUE 2 1 1 1
+VALUE 2 1 1 1

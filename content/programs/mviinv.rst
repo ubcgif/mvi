@@ -16,33 +16,61 @@ The argument specifying the number of CPU threads used in the OpenMP format is o
 Input files
 -----------
 
-Input files can be given any name. If there are spaces in the path or file name, you *MUST* use quotes around the entire path (including the filename). Files that may be used by the inversion are:
+Input files can be given any name. If there are spaces in the path or file name, you *MUST* use quotes around the entire path (including the filename).
 
-#. ``obs.mag``: Mandatory `observations file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_.
+The input file contains the following elements. An example file can be downloaded here.
 
-#. ``mviinv.mtx``: Mandatory sensitivity matrix from :ref:`mvisen`
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|Line|  Input                        |  Description                                                                                                                                                     |
++====+===============================+==================================================================================================================================================================+
+|1   |  :ref:`mode<mode>`            | 1(PST), 2 (ATP)                                                                                                                                                  |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|2   |:ref:`invMode<invMode>`        | 1 (Target misfit), 2 (Fix beta)                                                                                                                                  |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|3   |:ref:`par, tolc<par>`          | (Mode 1) Chifac, tol | (Mode2) Value                                                                                                                             |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|4   |:ref:`obs<obs>`                | `Observations file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_                                                         |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|5   |:ref:`matrixFile<matrixFile>`  | Sensitivity matrix file from :ref:`mvisen`                                                                                                                       |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|6   |:ref:`init<init>`              | Starting `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ | VALUE [p s t]                        |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|7   |:ref:`ref<ref>`                | Reference `Vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ | VALUE [p s t]                       |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|8   |:ref:`act<act>`                | `Active model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ | null                                                |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|9   |:ref:`lowerBounds<lowerBounds>`| Lower bound `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ | VALUE :math:`[b^l_p b^l_s b^l_t]` |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|10  |:ref:`upperBounds<upperBounds>`| Upper bound `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ | VALUE :math:`[b^u_p b^u_s b^u_t]` |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|11  |:ref:`scalings<alpha>`         | :math:`\alpha_s \alpha_x \alpha_y \alpha_z` | Lx Ly Lz | null                                                                                                    |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|12  |:ref:`remGamma<remGamma>`      | Trade-off induced/remanence (PST)                                                                                                                                |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|13  |:ref:`SMOOTH_MOD<SMOOTH_MOD>`  | Refence model in gradient term                                                                                                                                   |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|14  |:ref:`w1.dat<weights>`         |   P `weighting file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ | null                                               |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|15  |:ref:`w2.dat<weights>`         |  S `weighting file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ | null                                                |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|16  |:ref:`w3.dat<weights>`         |  T `weighting file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ | null                                                |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|17  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on amplitude   | null                                                                                                                                       |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|18  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on theta angle | null                                                                                                                                       |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|19  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on phi angle   | null                                                                                                                                       |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-#. ``initial.fld``: Optional initial `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_. Vector files in ``mviinv`` currently need to be **P,S,T** mode.
-
-#. ``ref.den``: Optional refence `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_. Vector files in ``mviinv`` currently need to be **P,S,T** mode.
-
-#. ``active.txt``: Optional `active model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_
-
-#. ``upperBound.fld``: Optional upper bound `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_. Vector files in ``mviinv`` currently need to be **P,S,T** mode. Values can be used to set a global bound (see below).
-
-#. ``lowerBound.fld``: Optional lower bound `vector model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_. Vector files in ``mviinv`` currently need to be **P,S,T** mode. Values can be used to set a global bound (see below).
-
-#. ``weights.wt``: Optional `weighting file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_. Weights can be given for each **P,S,T** component (i.e., there may be three weight files)
-
-#. ``mviinv.inp``: The control file containing the options. Does not need to be specifically called "mviinv.inp".
-
+Download example here:
 
 .. figure:: ../../images/mviinv.png
      :align: center
      :figwidth: 75%
 
-
 The parameters within the control file are:
+
+.. _mode:
 
 -  ``mode``: An integer specifying one of three choices on which solution the inversion will solve:
 
@@ -52,6 +80,8 @@ The parameters within the control file are:
 
    #. ``mode=3``: the program solves the vector problem in the **A,T,P** (Spherical) and then uses the last four lines of the input file to solve the Lp/Lq problem for compactness/blockiness.
 
+.. _invmode:
+
 -  ``invMode``: An integer specifying one of three choices for determining the trade-off parameter.
 
    #. ``invMode=1``: the program chooses the trade off parameter by carrying out a line search so that the target value of data misfit is achieved (e.g., :math:`\phi_d^*=N`).
@@ -59,6 +89,9 @@ The parameters within the control file are:
    #. ``invMode=2``: the user inputs the trade-off parameter (``par``).
 
    #. ``invMode=3``: The user gives the trade-off parameter (``par``) and the initial model  from an **A,T,P** L2 inversion (``mode=2``) is used (and required) and the program will automatically go to the Lp/Lq solves. *This mode only runs the A,T,P formulation for Lp/Lq.*
+
+
+.. _par:
 
 - ``par``, ``tolc`` Two real numbers that are dependent upon the value of ``mode``.
 
@@ -70,19 +103,35 @@ The parameters within the control file are:
 
    | **NOTE:** When both ``par`` and ``tolc`` are used. When only ``par`` is used. When ``mode=3``, neither nor ``tolc`` are used. However, the third line should always have two values.
 
+.. _obs:
+
 -  ``obs``: Input `data file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_. The file must specify the standard deviations of the error. By definition these values are greater than zero.
+
+.. _matrixFile:
 
 -  ``matrixFile``: The binary file containing the sensitivities created by :ref:`mvisen`.
 
+.. _init:
+
 -  ``init``: The initial magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 0.001 0.001 0.001``), or by a filename. There must be three values (P,S,T) if this option is used. Each component must be within the upper and lower bounds.
 
--  ``init``: The reference magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 0 0 0``), or by a filename. There must be three values (P,S,T) if this option is used. Each component must be within the upper and lower bounds.
+.. _ref:
+
+-  ``ref``: The reference magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 0 0 0``), or by a filename. There must be three values (P,S,T) if this option is used. Each component must be within the upper and lower bounds.
+
+.. _act:
 
 - ``act``: The `active model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ defining which cells in the model are allowed to be solved.
 
+.. _lowerBounds:
+
 - ``lowerBounds``: The reference magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE -1 -1 -1``), or by a filename. There must be three values (P,S,T) if this option is used. For example, a P value of -1 is a magnetization reverse to the inducing field with an amplitude of 1 SI.
 
+.. _upperBounds:
+
 - ``upperBounds``: The reference magnetization `vector model <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelVectorfile.html>`_ in **P,S,T** mode. Values can be defined as a value for uniform models (e.g. ``VALUE 1 1 1``), or by a filename. There must be three values (P,S,T) if this option is used. For example, a P value of 1 is a magnetization in the inducing field direction with an amplitude of 1 SI.
+
+.. _alpha:
 
 - :math:`\alpha_s, \alpha_x, \alpha_y, \alpha_z`: Coefficients for the each model component. :math:`\alpha_s` is the smallest model component. :math:`\alpha_x` is the coefficient for the derivative in the easting direction. :math:`\alpha_y` is the coefficient for the derivative in the northing direction. The coefficient :math:`\alpha_z` is for the derivative in the vertical direction.
 
@@ -97,15 +146,23 @@ The parameters within the control file are:
 
    where :math:`L = max[L_x, L_y, L_z]`. When user-defined, it is preferable to have length scales exceed the corresponding cell dimensions.
 
+.. _remGamma:
+
 - ``remGamma``: This is a number that places (de-)emphasis on the remenant magnetization components (and extra scaling of **S,T** compents versus **P**). If ``null`` is chosen, the trade-off between induced and remanent components are all 0.5. The higher the number, the stronger the inversion will try to recover an induced magnetization model.
 
+.. _SMOOTH_MOD:
+
 - ``SMOOTH_MOD``: This option was not available in previous versions of the code and can be used to define the reference model in and out of the derivative terms. The options are: ``SMOOTH_MOD_DIF`` (reference model is defined in the derivative terms) and ``SMOOTH_MOD`` (reference model is defined in only the smallest term). See equation :eq:`mof` for details.
+
+.. _weights:
 
 - ``w1.dat``: Name of the `weights file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ containing weighting matrices for the *P* component. If ``null`` is entered, default values of unity are used.
 
 - ``w2.dat``: Name of the `weights file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ containing weighting matrices for the *S* component. If ``null`` is entered, default values of unity are used.
 
 - ``w3.dat``: Name of the `weights file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ containing weighting matrices for the *T* component. If ``null`` is entered, default values of unity are used.
+
+.. _norms:
 
 - ``VALUE Ps Qx Qy Qz``: The Lp/Lq exponents for the **magnetization amplitude** (A). *The mode must be 2 or 3 and this line is not required if mode=1.* ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. P works on the smallest model component and Qs are on the spatial components of the model objective function.
 
@@ -116,49 +173,6 @@ The parameters within the control file are:
     **NOTE**: This line is only incorporated for the amplitude. The smallest model component is turned off for the Lp with the two angles, theta and phi. The gradient effective zero is set to two and five degrees for theta and phi, respectively.
 
 
-Example of control file
-~~~~~~~~~~~~~~~~~~~~~~~
-+----+-------------------+------------------------------------------------------------------+
-|Line|  Input            |  Description                                                     |
-+====+===================+==================================================================+
-|1   |  mode             | 1(PST), 2 (ATP)                                                  |
-+----+-------------------+------------------------------------------------------------------+
-|2   |  invMode          | 1 (Target misfit), 2 (Fix beta)                                  |
-+----+-------------------+------------------------------------------------------------------+
-|3   |  par, tolc        | (Mode 1) Chifac, tol | (Mode2) Value                             |
-+----+-------------------+------------------------------------------------------------------+
-|4   |  obs              | Observation file                                                 |
-+----+-------------------+------------------------------------------------------------------+
-|5   |  matrixFile       | Sensitivity matrix file                                          |
-+----+-------------------+------------------------------------------------------------------+
-|6   |  init             | Starting model file | VALUE [p s t]                              |
-+----+-------------------+------------------------------------------------------------------+
-|7   |  ref              | Reference model file | VALUE [p s t]                             |
-+----+-------------------+------------------------------------------------------------------+
-|8   |  act              | Active cell file | null                                          |
-+----+-------------------+------------------------------------------------------------------+
-|9   |  lowerBounds      | Lower bound file | VALUE :math:`[b^l_p b^l_s b^l_t]`             |
-+----+-------------------+------------------------------------------------------------------+
-|10  |  upperBounds      | Upper bound values | VALUE :math:`[b^u_p b^u_s b^u_t]`           |
-+----+-------------------+------------------------------------------------------------------+
-|11  |  scalings         | :math:`\alpha_s \alpha_x \alpha_y \alpha_z` | Lx Ly Lz | null    |
-+----+-------------------+------------------------------------------------------------------+
-|12  |  remGamma         | Trade-off induced/remanence (PST)                                |
-+----+-------------------+------------------------------------------------------------------+
-|13  |  SMOOTH_MOD       | Refence model in gradient term                                   |
-+----+-------------------+------------------------------------------------------------------+
-|14  |  w1.dat           |   P weighting file | null                                        |
-+----+-------------------+------------------------------------------------------------------+
-|15  |  w2.dat           |   S weighting file | null                                        |
-+----+-------------------+------------------------------------------------------------------+
-|16  |  w3.dat           |   T weighting file | null                                        |
-+----+-------------------+------------------------------------------------------------------+
-|17  |  VALUE Ps Px Py Pz| Norm on amplitude   | null                                       |
-+----+-------------------+------------------------------------------------------------------+
-|18  |  VALUE Ps Px Py Pz| Norm on theta angle | null                                       |
-+----+-------------------+------------------------------------------------------------------+
-|19  |  VALUE Ps Px Py Pz| Norm on phi angle   | null                                       |
-+----+-------------------+------------------------------------------------------------------+
 
 
 

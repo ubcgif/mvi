@@ -17,7 +17,21 @@ The argument specifying the number of CPU threads used in the OpenMP format is o
 Input files
 -----------
 
-Format of the control file:
+The table below describes each rows. An example file can be downloaded here.
+
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|Line|  Input                        |  Description                                                                                                                                                     |
++====+===============================+==================================================================================================================================================================+
+|1   |  :ref:`mesh<meshSen>`         | 3D `Mesh file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/mesh3Dfile.html>`_.                                                          |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|4   |  :ref:`obs<obsSen>`           | `Observations file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_                                                         |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|5   |  :ref:`topography<topoSen>`   | `Topography file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/topoGIF3Dfile.html>`_                                                     |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|6   |  :ref:`wvltx<wvltx>`          | Wavelet type : daubx | symmx | NONE | null (daub2)                                                                                                               |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|7   |  :ref:`itol, eps<itol>`       | Wavelet parameters | null (search)                                                                                                                               |
++----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. figure:: ../../images/mvisen.png
      :align: center
@@ -25,13 +39,23 @@ Format of the control file:
 
 The input parameters for the control file are:
 
+.. _meshSen:
+
 - ``mesh.msh``: Name of 3D `mesh file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/mesh3Dfile.html>`_.
+
+.. _obsSen:
 
 - ``obs.mag``: The `data file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/magfile.html>`_ that contains the observation locations. Note for sensitivity calculations, standard deviations are not required, but this file may be the observations that will be used in the inversion (with uncertainties).
 
+.. _topoSen:
+
 - ``topo.dat``: Surface `topography <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/topoGIF3Dfile.html>`_. If ``null`` is entered, the surface will be treated as being flat on top of the mesh.
 
+.. _wvltx:
+
 - ``wvltx``: A five-character string identifying the type of wavelet used to compress the sensitivity matrix. The types of wavelets available are Daubechies wavelet with 1 to 6 vanishing moments (``daub1``, ``daub2`` and so on) and Symmlets with 4 to 6 vanishing moments (``symm4``, ``symm5``, ``symm6``). Note that ``daub1`` is the Haar wavelet and ``daub2`` is the Daubechies-4 wavelet. The Daubechies-4 wavelet is suitable for most inversions, while the others are provided for user experimentation. If ``NONE`` is entered, the program does not use wavelet compression.
+
+.. _itol:
 
 - ``itol``, ``eps``: A positive integer value that specifies how the wavelet threshold level is determined. This line is ignored if no wavelet compression is being used, however a placeholder value must still be used in the input file.
 

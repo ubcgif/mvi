@@ -260,7 +260,7 @@ derivatives of the forward operation with respect to the *model*
 
 The first question that arises during the inversion of magnetic data concerns the
 definition of the "model". The MVI program allows for the inversion of a magnetization vector defined in
-either Cartesian or Spherical coordinate systems :cite:`Lelievre2009a`. We define both systems below.
+either Cartesian or Spherical coordinate systems :cite:`LelievrePhD`. We define both systems below.
 
 .. _MVIC:
 
