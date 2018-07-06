@@ -1,0 +1,5 @@
+Mesh_40m.msh 		! 3D Mesh file.
+Obs_TMI_I45_D30.mag ! Observations file
+null 				! Topography file | null
+null 				! Wavelet type : daubx | symmx | NONE | null (daub2)
+null 				! Wavelet parameters | null (search)

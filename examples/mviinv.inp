@@ -1,0 +1,19 @@
+2							! 1(PST), 2 (ATP)
+1							! 1 (Target misfit), 2 (Fix beta)
+1 0.02						! (Mode 1) Chifac, tol | (Mode2) Value
+Obs_TMI_I45_D30.mag			! Observations file
+mviinv.mtx					! Sensitivity matrix file from MVISEN
+VALUE 0.0001 0.0001 0.0001	! Starting vector model file | VALUE [p s t]
+VALUE 0.0 0.0 0.0			! Reference Vector model file | VALUE [p s t]
+null						! Active model file | null
+VALUE -1, -1, -1			! Lower bound vector model file | VALUE [p s t]
+VALUE 1, 1, 1				! Upper bound vector model file | VALUE [p s t]
+1.0 1.0 1.0 1.0				! αs αx αy αz | Lx Ly Lz | null
+1							! Trade-off induced/remanence (Mode 1 only)
+SMOOTH_MOD					! Refence model in gradient term
+null						! P weighting file | null
+null						! S weighting file | null
+null						! T weighting file | null
+VALUE 0 1 1 1				! Norms on amplitude [s x y z] | null
+VALUE 2 1 1 1				! Norms on vertical angle [s x y z] | null
+VALUE 2 1 1 1				! Norms on horizontal angle [s x y z] | null
