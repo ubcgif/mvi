@@ -18,7 +18,7 @@ Input files
 
 Input files can be given any name. If there are spaces in the path or file name, you *MUST* use quotes around the entire path (including the filename).
 
-The input file contains the following elements. An example file can be downloaded here.
+The input file contains the following elements. An example file can be `copied from here <https://github.com/ubcgif/mvi/raw/v3/examples/mviinv.inp>`_ .
 
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |Line|  Input                        |  Description                                                                                                                                                     |

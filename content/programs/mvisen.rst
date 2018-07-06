@@ -17,7 +17,7 @@ The argument specifying the number of CPU threads used in the OpenMP format is o
 Input files
 -----------
 
-The table below describes each rows. An example file can be downloaded here.
+The table below describes each rows. An example file can be `copied from here <https://github.com/ubcgif/mvi/raw/v3/examples/mvisen.inp>`_.
 
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |Line|  Input                        |  Description                                                                                                                                                     |
