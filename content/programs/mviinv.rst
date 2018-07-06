@@ -64,7 +64,7 @@ The input file contains the following elements. An example file can be `copied f
 
 Download example here:
 
-.. figure:: ../../images/mviinv.png
+.. figure:: ../../images/mviinv_Example.png
      :align: center
      :figwidth: 75%
 
