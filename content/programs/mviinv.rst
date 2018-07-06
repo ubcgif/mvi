@@ -62,7 +62,6 @@ The input file contains the following elements. An example file can be `copied f
 |19  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on phi angle   | null                                                                                                                                       |
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-Download example here:
 
 .. figure:: ../../images/mviinv_Example.png
      :align: center
