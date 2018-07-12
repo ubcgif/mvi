@@ -152,7 +152,7 @@ The matrix has elements :math:`g_{ij}` which quantify the contribution to the
 :math:`i^{th}` datum due to a unit susceptibility in the :math:`j^{th}` cell.
 The calculation involves the evaluation of equation :eq:`tij` in a 3D
 rectangular domain defined by each cell. This operation can be done by
-``MAGFWR3D`` if only the data is required, or by ``MAGSEN3D`` if the forward
+``MVIFWR`` if only the data is required, or by ``MVISEN`` if the forward
 matrix is stored on disk for the inversion. The :math:`G` matrix provides the
 forward mapping from the model to the data during the entire inverse process.
 We will discuss its efficient representation via the wavelet transform in a
@@ -273,8 +273,8 @@ system such that one of the components is aligned with the inducing field
 :math:`\mathbf{H}_0`. Thus
 
 .. math::
-  \mathbf{M} = |{H}_0| \left[ \begin{array}{c} \boldsymbol \kappa_p \\ \boldsymbol \kappa_s \\ \boldsymbol \kappa_t \end{array} \right]\\
-  \boldsymbol \kappa_{pst} = \Omega_\phi \Omega_\theta \boldsymbol \kappa_{xyz}
+  \mathbf{M} = |{H}_0| \left[ \begin{array}{c} \boldsymbol \kappa_P \\ \boldsymbol \kappa_S \\ \boldsymbol \kappa_T \end{array} \right]\\
+  \mathbf{m}_{PST} = \Omega_\phi \Omega_\theta \boldsymbol \kappa_{xyz}
 
 where *p* (primary), *s* (secondary) and *t* (tertiary) defines an
 orthogonal system that describes the magnetization vector in 3D. The matrices
@@ -309,11 +309,14 @@ As an alternative to the Cartesian formulation, the magnetization vector can be
 expressed in terms of an amplitude (:math:`\alpha`) and two orientation angles
 (:math:`\theta,\;\phi`) (ATP).
 
+.. math::
+  \mathbf{m}_{ATP} = \left[ \begin{array}{c} \mathbf{a} \\ \boldsymbol \theta \\ \boldsymbol \phi \end{array} \right]
+
 .. _trig:
 .. math::
-  x =& \alpha \; cos(\phi)\;cos(\theta) \\
-  y  =   & \alpha \; cos(\phi)\;sin(\theta) \\
-  z = & \alpha \; sin(\phi)
+  x =& \alpha \; cos(\theta)\;cos(\phi) \\
+  y  =   & \alpha \; cos(\theta)\;sin(\phi) \\
+  z = & \alpha \; sin(\theta)
   :label: trig
 
 .. figure:: ../images/Magnetization_Spherical.png
@@ -360,61 +363,68 @@ spatial directions. Let the model objective function expressed as
 
 .. _mof:
 .. math::
-   \phi_m(\mathbf{m}) = \alpha_s\int\limits_V w_s\left\{w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}] \right\}^2dv \;+\\
-    \sum_{i=x,y,z} \alpha_i\int\limits_V w_i \left\{\frac{\partial w(\mathbf{r})[\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}]}{\partial i}\right\}^2dv \\ \nonumber
+   \phi_m(\mathbf{m}) = \alpha_s\int\limits_V w_s w(\mathbf{r})\left|\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}\right|^{p_s} dv \;+\\
+    \sum_{i=x,y,z} \alpha_i\int\limits_V w_i w(\mathbf{r})\left|\frac{\partial [\mathbf{m}(\mathbf{r})-{\mathbf{m_{ref}}}]}{\partial i}\right|^{p_i} dv \\ \nonumber
    :label: mof
 
 where the functions :math:`w_s`, :math:`w_x`, :math:`w_y` and :math:`w_z` are
-spatially dependent, while :math:`\alpha_s`, :math:`\alpha_x`,
+user defined weights, , while :math:`\alpha_s`, :math:`\alpha_x`,
 :math:`\alpha_y` and :math:`\alpha_z` are coefficients which affect the
-relative importance between the *smallness* and three *smoothness* functions. The
-reference model is given as :math:`\mathbf{m_{ref}}` and :math:`w(\mathbf{r})` is
-a generalized sensitivity weighting function. The purpose of this function is to
-counteract the geometrical decay of the sensitivities with respect to the distances from the
-observation locations. The details of the
-sensitivity weighting function will be discussed in the :ref:`next section<sensWeight>`.
+relative importance between the penalty functions. Each function can use
+different :math:`l_p`-norm measures to enforce sparsity on model or its
+gradients. The reference model :math:`\mathbf{m_{ref}}` can be included
+optionally in the gradient penalty through the :ref:`SMOOTH_MOD_DIF
+<SMOOTH_MOD>` option. The generalized sensitivity weighting function
+:math:`w(\mathbf{r})` counteract the geometrical decay of the sensitivities
+with respect to the distances from the observation locations. The details of
+the sensitivity weighting function will be discussed in the :ref:`next
+section<sensWeight>`.
 
-.. The objective function in equation :eq:`mof` has the flexibility to
-.. incorporate many types of prior knowledge into the inversion. The reference
-.. model may be a general background model that is estimated from previous
-.. investigations or it will be a zero model. The reference model would generally
-.. be included in the first component of the objective function but it can be
-.. removed, if desired, from the remaining terms; often we are more confident in
-.. specifying the value of the model at a particular point than in supplying an
-.. estimate of the gradient. The choice of whether or not to include
-.. :math:`\mathbf{m}_0` in the derivative terms can have significant effect on
-.. the recovered model as shown through the synthetic example (section
-.. [RefModSection]). The relative closeness of the final model to the reference
-.. model at any location is controlled by the function :math:`w_s`. For example,
-.. if the interpreter has high confidence in the reference model at a particular
-.. region, he can specify :math:`w_s` to have increased amplitude there compared
-.. to other regions of the model, thus favouring a model near the reference model
-.. in those locations. The weighting functions :math:`w_x`, :math:`w_y`, and
-.. :math:`w_z` can be designed to enhance or attenuate gradients in various
-.. regions in the model domain. If geology suggests a rapid transition zone in
-.. the model, then a decreased weighting on particular derivatives of the model
-.. will allow for higher gradients there and thus provide a more geologic model
-.. that fits the data.
+The :math:`l_p`-norm is approximated by a Scaled-IRLS
+procedure such that for some general model function :math:`f(m)` (model or its gradients)
 
+.. math::
+   \int | f(m) |^p dV \approx \int \frac{f(m)^2}{(f(m^{(k-1)})^2 + \epsilon^2)^{1-p/2}} dV
+
+where :math:`k` stands for the iteration step.
 Numerically, the model objective function in equation Eq. :eq:`mof` is discretized
-onto the mesh defining the effective susceptibility model using a finite difference
+onto the mesh using a finite difference
 approximation. This yields:
 
 .. math::
     \phi_m({\mathbf{m}}) = \alpha_s \| \mathbf{W}_s \mathbf{R_s} ({\mathbf{m}}-{\mathbf{m_{ref}}})\|_2^2 + \sum_{i=x,y,z} \alpha_i \| \mathbf{W}_i \mathbf{R_i} \mathbf{G}_i (\mathbf{m}-\mathbf{m_{ref}}),
     :label: modobjdiscr
 
-where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are vectors of length :math:`3M`
-representing the recovered and reference models, respectively. The individual
-matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`, :math:`\mathbf{W}_y`, and
-:math:`\mathbf{W}_z` contain *user-defined* weights as well as the
-sensitivity weighting functions :math:`w(\mathbf{r})`. The gradient matrices
-:math:`\mathbf{G}_x`, :math:`\mathbf{G}_y` and :math:`\mathbf{G}_z` are finite
-difference operators measuring the change in model values.
+where :math:`\mathbf{m}` and :math:`\mathbf{m}_0` are vectors of length
+:math:`3M` representing the recovered and reference models, respectively. The
+individual matrices :math:`\mathbf{W}_s`, :math:`\mathbf{W}_x`,
+:math:`\mathbf{W}_y`, and :math:`\mathbf{W}_z` contain *user-defined* weights
+as well as the sensitivity weighting functions :math:`w(\mathbf{r})`. The
+gradient matrices :math:`\mathbf{G}_x`, :math:`\mathbf{G}_y` and
+:math:`\mathbf{G}_z` are finite difference operators measuring the change in
+model values.
 
-.. important::
-  **Change from previous versions** - The difference operators :math:`\mathbf{G_i}` are now unitless, removing the need to alter scaling between the *smallness*
-  and *smoothness* terms. By default, :math:`\alpha_s`, :math:`\alpha_x`, :math:`\alpha_y` and :math:`\alpha_z` = 1
+The diagonal matrices :math:`\mathbf{R}_s`, :math:`\mathbf{R}_x`,
+:math:`\mathbf{R}_y` and :math:`\mathbf{R}_z` contain sparsity weights applied
+on the model and its gradients:
+
+.. math::
+
+  \mathbf{R} = diag(\left[\gamma (f(\mathbf{m}^{(k-1)})^2 + \epsilon^2)^{p/2-1} \right]^{1/2})
+
+where :math:`\gamma` is a normalization factor.
+More details about the sparse inversion can
+be found `here
+<http://giftoolscookbook.readthedocs.io/en/latest/content/fundamentals/N
+orms.html#sparse-and-blocky-norms>`__ By default (and for :ref:`PST
+formulation <MVIC>`) the inversion uses the :math:`l_2`-norm penalty, in which
+case the :math:`\mathbf{R}` matrices reduce to the indentity matrix. Note that
+:math:`p \in [0,2]` can be defined on a cell-by-cell basis.
+
+.. important:: **Change from previous versions** - The difference operators
+                :math:`\mathbf{G_i}` are now unitless, removing the need to alter scaling
+                between the *smallness*   and *smoothness* terms. By default,
+                :math:`\alpha_s=\alpha_x=\alpha_y=\alpha_z = 1`
 
 
 .. _sensWeight:

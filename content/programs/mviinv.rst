@@ -55,11 +55,11 @@ The input file contains the following elements. An example file can be `copied f
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |16  |:ref:`w3.dat<weights>`         |  T `weighting file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelfile.html>`_ | null                                                |
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|17  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on amplitude   | null                                                                                                                                       |
+|17  |:ref:`ps px py pz <norms>`     | Amplitude `norm model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelNormfile.html>`_ | VALUE [ps px py pz] | null [2 2 2 2]    |
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|18  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on theta angle | null                                                                                                                                       |
+|18  |:ref:`ps px py pz <norms>`     | Theta angle `norm model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelNormfile.html>`_ | VALUE [ps px py pz] | null [2 2 2 2]  |
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|19  |:ref:`VALUE Ps Px Py Pz<norms>`| Norm on phi angle   | null                                                                                                                                       |
+|19  |:ref:`ps px py pz <norms>`     | Phi angle `norm model file <http://giftoolscookbook.readthedocs.io/en/latest/content/fileFormats/modelNormfile.html>`_ | VALUE [ps px py pz] | null [2 2 2 2]    |
 +----+-------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -163,11 +163,13 @@ The parameters within the control file are:
 
 .. _norms:
 
-- ``VALUE Ps Qx Qy Qz``: The Lp/Lq exponents for the **magnetization amplitude** (A). *The mode must be 2 or 3 and this line is not required if mode=1.* ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. P works on the smallest model component and Qs are on the spatial components of the model objective function.
+The Lp/Lq exponents used for sparsity applied on the model and its gradients. Sparsity can vary on a cell-by-cell basis through a column file (nC x 4) | VALUES [p, qx, qy, qz] | null (Default 2 2 2 2)
 
-- ``VALUE Ps Qx Qy Qz``: The Lp/Lq exponents for the **theta angle** (T: polar angle positive down). The Lp constant is ignored. *The mode must be 2 or 3 and this line is not required if mode=1.*  ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. Qs are on the spatial components of the model objective function.
+- ``Ps Qx Qy Qz``: **magnetization amplitude** (A). *The mode must be 2 or 3 and this line is not required if mode=1.* ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. P works on the smallest model component and Qs are on the spatial components of the model objective function.
 
-- ``VALUE Ps Qx Qy Qz``: The Lp/Lq exponents for the **phi angle** (P: zenith angle). The Lp constant is ignored. *The mode must be 2 or 3 and this line is not required if mode=1.*  ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. Qs are on the spatial components of the model objective function.
+- ``Ps Qx Qy Qz``: **theta angle** (T: polar angle positive down). The Lp constant is ignored. *The mode must be 2 or 3 and this line is not required if mode=1.*  ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. Qs are on the spatial components of the model objective function.
+
+- ``Ps Qx Qy Qz``: **phi angle** (P: zenith angle). The Lp constant is ignored. *The mode must be 2 or 3 and this line is not required if mode=1.*  ``null`` makes :math:`P=Q_x=Q_y=Q_z=2`. Qs are on the spatial components of the model objective function.
 
     **NOTE**: This line is only incorporated for the amplitude. The smallest model component is turned off for the Lp with the two angles, theta and phi. The gradient effective zero is set to two and five degrees for theta and phi, respectively.
 
