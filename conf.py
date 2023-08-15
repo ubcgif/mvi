@@ -15,7 +15,6 @@
 import sys
 import os
 import shlex
-import shlex
 
 sys.path.append(os.path.abspath('./_ext'))
 
@@ -37,9 +36,11 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinxcontrib.bibtex',
     'edit_on_github',
-    'purpose',
-    'example',
+    # 'purpose',
+    # 'example',
 ]
+
+bibtex_bibfiles = ['reference.bib']
 
 # Number figures
 numfig = True
