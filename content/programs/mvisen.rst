@@ -41,8 +41,6 @@ The input parameters for the control file are:
 
      ``itol=2``: the user defines the threshold level and ``eps`` is the threshold to be used. If ``null`` is entered on this line, a default relative reconstruction error of 0.05 (e.g. 5%) is used and the relative threshold level is calculated (i.e., ``itol=1`` , ``eps=0.05``).
 
-     **NOTE** The detailed explanation of threshold level and reconstruction error can be found in the :ref:`wavelet section <waveletSection>` of this manual.
-
 
 Example of input file
 ~~~~~~~~~~~~~~~~~~~~~
